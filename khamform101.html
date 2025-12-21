@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج خام للنشر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="khamform101.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <a href="KhamMain.html" class="nav-logo">خام</a>
+        
+        <div class="nav-links">
+            <a href="KhamMain.html">الرئيسية</a>
+            <a href="Khambookstorelibrary.html">مكتبة خام</a>
+            
+            <a href="khamform101.html">خام للنشر والتوزيع</a>
+            
+            <a href="Khamclub.html">نادي خام</a>
+        </div>
+    </div>
+    <div class="nav-divider"></div>
+</nav>
+
+    <div class="container">
+        <form action="https://formspree.io/f/mrezkqba" method="POST">
+            
+            <div class="card header-card">
+                <h1>خام للنشر والتوزيع</h1>
+                <p class="subtitle">نموذج تفاصيل العمل وحساب التكلفة</p>
+                <div class="divider"></div>
+                <p class="required-note">*تشير إلى أنّ السؤال مطلوب</p>
+            </div>
+
+            <div class="card">
+                <label class="question-label">إسم المؤلف؟*</label>
+                <div class="input-wrapper">
+                    <input type="text" name="اسم_المؤلف" placeholder="إجابتك" class="text-input" required>
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label">ادخل البريد الالكتروني؟</label>
+                <div class="input-wrapper">
+                    <input type="email" name="البريد_الإلكتروني" placeholder="إجابتك" class="text-input">
+                </div>
+            </div>
+
+            <div class="card">
+                <label class="question-label">رقم الجوال*</label>
+                <div class="input-wrapper">
+                    <input type="tel" name="رقم_الجوال" placeholder="05xxxxxxxx" class="text-input" required>
+                </div>
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="submit-btn">إرسال</button>
+                <button type="reset" class="reset-btn">مسح النموذج</button>
+            </div>
+
+        </form>
+    </div>
+
+</body>
+</html>
