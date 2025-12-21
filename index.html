@@ -33,12 +33,16 @@
             margin-bottom: 25px;
             text-align: right;
         }
-        .author-img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid #333;
+   
+.author-img {
+            width: 120px;     /* العرض والطول متساويان لضمان الدائرة */
+            height: 120px;    
+            border-radius: 50%; /* هذا السطر هو من يجعلها دائرية */
+            object-fit: cover;  /* يضمن عدم تمدد الصورة داخل الدائرة */
+            border: 2px solid #1a1a1a; /* إطار خفيف يعطي فخامة */
+        }
+
+        
         }
         .author-bio h2 { font-size: 20px; margin: 0 0 10px 0; color: #ffffff; }
         .author-bio p { font-size: 14px; opacity: 0.8; line-height: 1.6; margin: 0; }
@@ -127,3 +131,4 @@
     </div>
 </body>
 </html>
+
