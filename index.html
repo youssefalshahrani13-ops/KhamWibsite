@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خام | الرئيسية</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="khamform101.css">
+    <style>
+        /* تنسيقات عامة */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'IBM Plex Sans Arabic', sans-serif;
+            background-color: hsl(0, 0, 5);
+        }
+
+        /* 1. جعل الفيديو خلفية كاملة */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .navbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 70px; /* تحديد ارتفاع ثابت لضمان عدم تغيره */
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center; /* لتوسط العناصر عمودياً داخل الـ 70px */
+}
+
+
+
+        /* 3. توسيط الكارد فوق الفيديو */
+        .hero-section {
+            position: relative;
+            height: 100vh; /* يغطي كامل الشاشة */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+            padding-top: 60px; /* مسافة بسيطة تحت الناف بار */
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px 60px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            max-width: 500px;
+        }
+
+
+
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px; /* مساحة جانبية متوازنة */
+}
+
+
+
+
+        /* تنسيقات الجوال */
+        @media (max-width: 768px) {
+            .card {
+                width: 80%;
+                padding: 20px;
+            }
+        }
+
+        /* تنسيق الرابط والهوفر كما طلبتها */
+        .hero-link {
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s ease;
+        }
+
+        .hero-text {
+            font-weight: 700;
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #ffffff;
+            transition: 0.3s ease;
+        }
+
+        .hero-link:hover {
+            transform: translateY(-3px);
+        }
+
+        .hero-link:hover .hero-text {
+            color: #bbbbbb;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+/* --- تنسيق كلمة "خام" بخط مستقبلي --- */
+.nav-logo {
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 2px; /* تباعد الحروف ليعطي طابع مستقبلي */
+    text-transform: uppercase;
+    color: #fff;
+    text-decoration: none;
+}
+
+/* --- إخفاء زر البرجر في الشاشات الكبيرة --- */
+.menu-icon {
+    display: none;
+    cursor: pointer;
+    font-size: 28px;
+    color: white;
+}
+
+/* --- شروط الجوال (Media Query) --- */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: row-reverse; /* عكس الأماكن: اللوجو يسار والمنيو يمين */
+        justify-content: space-between;
+        padding: 0 20px;
+    }
+
+    .nav-links {
+        display: none; /* إخفاء الروابط العادية */
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        flex-direction: column;
+        padding: 20px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+    }
+
+    /* إظهار القائمة عند النقر */
+    .nav-links.active {
+        display: flex;
+    }
+
+    .menu-icon {
+        display: block; /* إظهار زر البرجر */
+    }
+
+    .nav-links a {
+        padding: 15px;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+
+    <div class="video-background">
+        <video autoplay loop muted playsinline>
+            <source src="IMG_3450.mp4" type="video/mp4">
+        </video>
+    </div>
+
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="menu-icon" onclick="toggleMenu()">☰</div>
+        
+        <a href="index.html" class="nav-logo">خام</a>
+
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">الرئيسية</a>
+            <a href="Khambookstorelibrary.html">مكتبة خام</a>
+            <a href="khamform101.html">خام للنشر والتوزيع</a>
+            <a href="Khamclub.html">نادي خام</a>
+        </div>
+    </div>
+</nav>
+
+
+
+    
+    <section class="hero-section">
+        <div class="card">
+            <a href="Khambookstorelibrary.html" class="hero-link">
+                <h1 class="hero-text">تجربة جديدة في عالم القراءة</h1>
+            </a>
+        </div>
+    </section>
+
+    <section class="hero-section">
+        <div class="card">
+            <a href="Khambookstorelibrary.html" class="hero-link">
+                <h1 class="hero-text">مستقبل نشر وتوزيع الكتب</h1>
+            </a>
+        </div>
+    </section>
+
+</body>
+
+
+
+<script>
+    function toggleMenu() {
+        const navLinks = document.getElementById("navLinks");
+        navLinks.classList.toggle("active");
+    }
+</script>
+
+
+
+
+</html>
