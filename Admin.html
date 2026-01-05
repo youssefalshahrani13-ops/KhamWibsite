@@ -142,7 +142,7 @@
     const auth = sessionStorage.getItem('isAdmin');
     if (!auth) {
         const pass = prompt("منطقة محظورة، أدخل كلمة السر:");
-        if (pass === "kham") {
+        if (pass === "jameel") {
             sessionStorage.setItem('isAdmin', 'true');
         } else {
             alert("وصول مرفوض");
@@ -227,4 +227,5 @@
 
 </body>
 </html>
+
 
