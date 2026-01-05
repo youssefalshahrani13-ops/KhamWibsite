@@ -1,3 +1,40 @@
+/* هذا الجزء سيطبق على الكومبيوتر والجوال */
+.main-hero {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* توسيط عمودي */
+    align-items: center;     /* توسيط أفقي */
+    min-height: 80vh;        /* تقليل الارتفاع من 100 إلى 70 ليرتفع المحتوى تلقائياً */
+    padding-top: 0;          /* إلغاء أي مسافة علوية */
+    margin-top: -200px;       /* سحب المحتوى للأعلى (زود الرقم إذا تبغاه يطلع أكثر) */
+}
+
+
+
+/* تنسيق الأزرار في المقاسات الصغيرة */
+@media screen and (max-width: 768px) {
+    .hero-cta {
+        display: flex;
+        flex-direction: column; /* ترتيب الأزرار فوق بعض */
+        gap: 15px;             /* مسافة بين الزرين */
+        align-items: center;    /* توسيط الأزرار */
+    }
+
+    .primary-btn, .secondary-btn {
+        width: 100%;           /* جعل الزر يأخذ كامل العرض المتاح */
+        max-width: 300px;      /* تحديد عرض أقصى لكي لا يكون الزر ضخماً جداً */
+        text-align: center;
+    }
+    
+    .main-hero {
+        margin-top: -30px;     /* تعديل الإزاحة للأعلى في الجوال */
+    }
+}
+
+
+
+
+
 /* --- الأزرار الأساسية (نشر، إرسال، تحميل PDF) --- */
 /* خلفية بيضاء، نص أزرق، وعند الهوفر يبقى النص أزرق مع تأثير بسيط */
 .submit-full, 
@@ -990,4 +1027,3 @@ iframe { border: none; border-radius: 10px; }
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     opacity: 0.9;
 }
-
