@@ -224,7 +224,7 @@
             if (clickCount === 3) {
                 e.preventDefault(); // منع الانتقال للصفحة الرئيسية
                 const password = prompt("منطقة خاصة، أدخل الرمز:");
-                if (password === "jameel") {
+                if (password === "jay") {
                     window.location.href = "Admin.html";
                 } else if (password !== null) {
                     alert("الرمز خاطئ!");
@@ -237,7 +237,7 @@
     // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
     window.goToAdmin = function() {
         const password = prompt("يرجى إدخال كلمة السر:");
-        if (password === "jameel") {
+        if (password === "jay") {
             window.location.href = "Admin.html";
         } else if (password !== null) {
             alert("كلمة السر خاطئة!");
@@ -246,4 +246,5 @@
 </script>
 </body>
 </html>
+
 
