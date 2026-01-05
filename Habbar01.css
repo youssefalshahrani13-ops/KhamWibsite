@@ -1,3 +1,72 @@
+/* --- تنسيق موحد لكروت المراجعات والطلبات (Admin & Public) --- */
+.reviews-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+    gap: 15px; 
+    margin-top: 20px; 
+    align-items: start;
+}
+
+.comment-card, .comment-admin-card, .request-card { 
+    background: white; 
+    padding: 20px; 
+    border-radius: 20px; 
+    color: #333;
+    text-align: right;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+    border: none;
+    box-sizing: border-box;
+}
+
+
+.request-card { border-right: 4px solid #042de2; }
+
+.comment-card:hover, .comment-admin-card:hover, .request-card:hover { 
+    transform: translateY(-2px); 
+}
+
+/* تنسيقات النصوص داخل الكروت */
+.book-title-display, .book-title-tag { color: #042de2; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
+.stars-display { color: #ff9800; margin-bottom: 8px; font-size: 20px; }
+.text, .comment-text { color: #333; line-height: 1.6; font-size: 15px; }
+.username-bottom, .comment-author { display: block; margin-top: 10px; color: #777; font-size: 14px; font-weight:normal; }
+
+/* أزرار الحذف في صفحة الإدارة */
+.delete-btn {
+    background: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 15px;
+    width: 100%;
+    transition: 0.3s;
+}
+.delete-btn:hover { background: #cc0000; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* هذا التنسيق سيطبق فقط على الشاشات التي يقل عرضها عن 768 بكسل (الجوال) */
 @media (max-width: 768px) {
     .action-buttons {
@@ -760,3 +829,78 @@ iframe { border: none; border-radius: 10px; }
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
+
+
+
+
+
+/* تنسيق الجوال للأزرار */
+@media (max-width: 768px) {
+    /* حاوية أزرار المنتج (تحميل وتصفح) */
+    .action-buttons {
+        display: flex;
+        flex-direction: column; /* جعلهم فوق بعض */
+        gap: 12px;
+        width: 100%;
+    }
+
+    .download-btn, .preview-btn {
+        width: 100% !important; /* يأخذون كامل العرض */
+        max-width: none !important;
+        box-sizing: border-box;
+    }
+
+    /* حاوية أزرار الفورم (إرسال ومسح) */
+    .button-group, .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+
+
+/* --- الأزرار الأساسية (خلفية بيضاء، نص أزرق بولد) --- */
+/* تشمل: نشر، إرسال، تحميل الملف */
+.submit-full, 
+.form-actions button:first-child, 
+.download-btn {
+    background: white !important;
+    color: #042de2 !important;
+    font-weight: bold !important;
+    border: none !important;
+    border-radius: 12px;
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* --- الأزرار الثانوية (شفافة، إطار أبيض، نص أبيض بولد) --- */
+/* تشمل: مسح النموذج، إلغاء، تصفح */
+.reset-btn, 
+.btn-cancel, 
+.preview-btn {
+    background: transparent !important;
+    color: white !important;
+    font-weight: bold !important;
+    border: 1px solid white !important;
+    border-radius: 12px;
+    padding: 15px 25px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+/* تأثير الهوفر الموحد لجميع الأزرار */
+.submit-full:hover, .form-actions button:first-child:hover, .download-btn:hover,
+.reset-btn:hover, .btn-cancel:hover, .preview-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0.9;
+}
