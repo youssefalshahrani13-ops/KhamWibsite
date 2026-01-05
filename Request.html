@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبّار | نموذج طلب تعاون</title>
+    <link rel="stylesheet" href="Habbar01.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .form-container { background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.2); margin-top: 30px; }
+        .q-group { margin-bottom: 25px; text-align: right; }
+        .q-title { display: block; margin-bottom: 12px; font-weight: bold; font-size: 18px; }
+        select, input[type="text"], textarea { width: 100%; padding: 12px; border-radius: 10px; border: none; margin-top: 5px; box-sizing: border-box; }
+        .radio-group { display: flex; flex-direction: column; gap: 10px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; }
+        .radio-item { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .submit-full { width: 100%; background: #000; color: white; padding: 15px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 18px; transition: 0.3s; }
+        .submit-full:hover { background: #222; transform: translateY(-2px); }
+    </style>
+</head>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="index.html" id="adminLink">حبار</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="Habbar01.html">المنشورات</a></li>
+            <li><a href="Request.html">طلب تعاون</a></li>
+            <li><a href="javascript:void(0)" onclick="goToAdmin()">الإدارة 🔒</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<body>
+<div class="container">
+    <header style="text-align: center; margin-bottom: 40px;">
+        <h1 class="main-title">حبّار | نموذج طلب تعاون</h1>
+        <p>هذا النموذج مخصص للراغبين في التعاون بخصوص كتابة الإعلانات والمحتوى.</p>
+    </header>
+
+    <div class="form-container">
+        <div class="q-group">
+            <label class="q-title">ما اسمك؟ *</label>
+            <input type="text" id="name" placeholder="أدخل اسمك الكريم" required>
+        </div>
+
+        <div class="q-group">
+            <label class="q-title">أنت تمثّل: *</label>
+            <div class="radio-group">
+                <label class="radio-item"><input type="radio" name="represent" value="صاحب مشروع"> صاحب مشروع</label>
+                <label class="radio-item"><input type="radio" name="represent" value="صانع محتوى"> صانع محتوى</label>
+                <label class="radio-item"><input type="radio" name="represent" value="شركة / فريق"> شركة / فريق</label>
+                <label class="radio-item"><input type="radio" name="represent" value="فرد"> فرد (خدمة شخصية)</label>
+            </div>
+        </div>
+
+        <div class="q-group">
+            <label class="q-title">ما هو مجالك؟ *</label>
+            <input type="text" id="field" placeholder="مثال: التقنية، العطور، التعليم..." required>
+        </div>
+
+        <div class="q-group">
+            <label class="q-title">ما الخدمة التي تحتاجها؟ *</label>
+            <select id="service">
+                <option value="كتابة إعلان">كتابة إعلان</option>
+                <option value="كتابة محتوى">كتابة محتوى</option>
+                <option value="وصف منتجات">وصف منتجات</option>
+                <option value="صفحة هبوط">صفحة هبوط</option>
+                <option value="بناء هوية">بناء رسالة وقصة علامة</option>
+            </select>
+        </div>
+
+        <div class="q-group">
+            <label class="q-title">ميزانيتك التقريبية: *</label>
+            <select id="budget">
+                <option value="أقل من 500">أقل من 500 ريال</option>
+                <option value="500 - 1000">500 - 1000 ريال</option>
+                <option value="1000 - 3000">1000 - 3000 ريال</option>
+                <option value="أكثر من ذلك">أكثر من ذلك</option>
+            </select>
+        </div>
+
+        <div class="q-group">
+            <label class="q-title">رقمك / بريدك / يوزرك *</label>
+            <input type="text" id="contactInfo" placeholder="كيف نتواصل معك؟" required>
+        </div>
+
+        <button class="submit-full" onclick="sendRequest()">إرسال الطلب</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.sendRequest = function() {
+        const name = document.getElementById('name').value;
+        const field = document.getElementById('field').value;
+        const service = document.getElementById('service').value;
+        const budget = document.getElementById('budget').value;
+        const contact = document.getElementById('contactInfo').value;
+        const represent = document.querySelector('input[name="represent"]:checked')?.value;
+
+        if (name && represent && contact) {
+            push(ref(db, 'collaboration_requests'), {
+                name, represent, field, service, budget, contact,
+                date: new Date().toLocaleString('ar-SA')
+            }).then(() => {
+                alert("تم إرسال طلبك بنجاح. حبار يتطلع للعمل معك!");
+                location.reload();
+            });
+        } else {
+            alert("يرجى ملء الحقول الأساسية");
+        }
+    }
+</script>
+
+
+</script>
+
+</script>
+
+<script>
+    // 1. منطق المنيو البرجر (لفتح القائمة في الجوال)
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            // حركة اختيارية تجعل خطوط البرجر تتحول لـ X إذا أردت إضافة CSS لها لاحقاً
+            menuToggle.classList.toggle('is-active');
+        });
+    }
+
+    // إغلاق المنيو عند الضغط على أي رابط (لتحسين تجربة المستخدم)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+
+    // 2. منطق الدخول السري للإدارة (3 ضغطات على اللوجو)
+    let clickCount = 0;
+    const logoLink = document.getElementById('adminLink');
+
+    if (logoLink) {
+        logoLink.addEventListener('click', function(e) {
+            clickCount++;
+            
+            // إعادة تصفير العداد بعد ثانية واحدة
+            setTimeout(() => { clickCount = 0; }, 1000);
+
+            if (clickCount === 3) {
+                e.preventDefault(); // منع الانتقال للصفحة الرئيسية
+                const password = prompt("منطقة خاصة، أدخل الرمز:");
+                if (password === "jameel") {
+                    window.location.href = "Admin.html";
+                } else if (password !== null) {
+                    alert("الرمز خاطئ!");
+                }
+                clickCount = 0;
+            }
+        });
+    }
+
+    // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
+    window.goToAdmin = function() {
+        const password = prompt("يرجى إدخال كلمة السر:");
+        if (password === "jameel") {
+            window.location.href = "Admin.html";
+        } else if (password !== null) {
+            alert("كلمة السر خاطئة!");
+        }
+    }
+</script>
+
+
+
+
+</body>
+</html>

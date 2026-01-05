@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار | كاتب إعلانات ومحتوى</title>
+    <link rel="stylesheet" href="Habbar01.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="index.html" id="adminLink">حبار</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="Habbar01.html">المنشورات</a></li>
+            <li><a href="Request.html">طلب تعاون</a></li>
+            <li><a href="javascript:void(0)" onclick="goToAdmin()">الإدارة 🔒</a></li>
+        </ul>
+    </div>
+</nav>
+
+<body>
+
+    <div class="container main-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">كاتب إعلانات ومحتوى | Copywriter</h1>
+            <p class="hero-subtitle">أساعد الأفراد والشركات على زيادة الإيرادات 🌀</p>
+            
+            <div class="hero-cta">
+                <a href="Request.html" class="primary-btn">ابدأ مشروعك معي</a>
+                <a href="Habbar01.html" class="secondary-btn">تصفح أعمالي</a>
+            </div>
+
+            <div class="contact-links">
+                <p>متاح للتواصل عبر الخاص أو البريد 📩</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/habbarcw" target="_blank">Instagram</a>
+                    <span>|</span>
+                    <a href="https://linktr.ee/habbarcw" target="_blank">Linktree</a>
+                    <span>|</span>
+                    <a href="mailto:youssefalshahrani13@gmail.com">Email</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+</script>
+
+
+
+</script>
+
+
+<script>
+    // 1. منطق المنيو البرجر (لفتح القائمة في الجوال)
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            // حركة اختيارية تجعل خطوط البرجر تتحول لـ X إذا أردت إضافة CSS لها لاحقاً
+            menuToggle.classList.toggle('is-active');
+        });
+    }
+
+    // إغلاق المنيو عند الضغط على أي رابط (لتحسين تجربة المستخدم)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+
+    // 2. منطق الدخول السري للإدارة (3 ضغطات على اللوجو)
+    let clickCount = 0;
+    const logoLink = document.getElementById('adminLink');
+
+    if (logoLink) {
+        logoLink.addEventListener('click', function(e) {
+            clickCount++;
+            
+            // إعادة تصفير العداد بعد ثانية واحدة
+            setTimeout(() => { clickCount = 0; }, 1000);
+
+            if (clickCount === 3) {
+                e.preventDefault(); // منع الانتقال للصفحة الرئيسية
+                const password = prompt("منطقة خاصة، أدخل الرمز:");
+                if (password === "jameel") {
+                    window.location.href = "Admin.html";
+                } else if (password !== null) {
+                    alert("الرمز خاطئ!");
+                }
+                clickCount = 0;
+            }
+        });
+    }
+
+    // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
+    window.goToAdmin = function() {
+        const password = prompt("يرجى إدخال كلمة السر:");
+        if (password === "jameel") {
+            window.location.href = "Admin.html";
+        } else if (password !== null) {
+            alert("كلمة السر خاطئة!");
+        }
+    }
+</script>
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>لوحة تحكم الطلبات | حبّار</title>
+    <link rel="stylesheet" href="Habbar01.css">
+    <style>
+        .request-card { background: white; color: #333; padding: 25px; border-radius: 20px; text-align: right; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .req-tag { background: #042de2; color: white; padding: 4px 10px; border-radius: 5px; font-size: 12px; }
+        .req-info { margin-top: 15px; font-size: 14px; border-top: 1px solid #eee; padding-top: 10px; }
+        .req-info b { color: #042de2; }
+    </style>
+</head>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="index.html" id="adminLink">حبار</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="Habbar01.html">المنشورات</a></li>
+            <li><a href="Request.html">طلب تعاون</a></li>
+            <li><a href="javascript:void(0)" onclick="goToAdmin()">الإدارة 🔒</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<body>
+<div class="container">
+    <h1 class="main-title">طلبات التعاون الواردة</h1>
+    <div id="requestsList" class="reviews-grid">
+        </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = { /* نفس الإعدادات السابقة */ 
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    onValue(ref(db, 'collaboration_requests'), (snapshot) => {
+        const list = document.getElementById('requestsList');
+        list.innerHTML = "";
+        const data = snapshot.val();
+        if (data) {
+            Object.values(data).reverse().forEach(req => {
+                list.innerHTML += `
+                    <div class="request-card">
+                        <span class="req-tag">${req.represent}</span>
+                        <h3>${req.name}</h3>
+                        <div class="req-info">
+                            <p><b>المجال:</b> ${req.field}</p>
+                            <p><b>الخدمة:</b> ${req.service}</p>
+                            <p><b>الميزانية:</b> ${req.budget}</p>
+                            <p><b>التواصل:</b> ${req.contact}</p>
+                            <small style="color:#999">${req.date}</small>
+                        </div>
+                    </div>`;
+            });
+        }
+    });
+
+
+
+
+
+
+    // حماية بسيطة عند فتح الصفحة مباشرة
+const auth = sessionStorage.getItem('isAdmin');
+
+if (!auth) {
+    const pass = prompt("منطقة محظورة، أدخل كلمة السر:");
+    if (pass === "habbar2024") {
+        sessionStorage.setItem('isAdmin', 'true');
+    } else {
+        alert("وصول مرفوض");
+        window.location.href = "index.html"; // يرجعه للرئيسية
+    }
+}
+</script>
+
+
+<script>
+    // 1. منطق المنيو البرجر (لفتح القائمة في الجوال)
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            // حركة اختيارية تجعل خطوط البرجر تتحول لـ X إذا أردت إضافة CSS لها لاحقاً
+            menuToggle.classList.toggle('is-active');
+        });
+    }
+
+    // إغلاق المنيو عند الضغط على أي رابط (لتحسين تجربة المستخدم)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+
+    // 2. منطق الدخول السري للإدارة (3 ضغطات على اللوجو)
+    let clickCount = 0;
+    const logoLink = document.getElementById('adminLink');
+
+    if (logoLink) {
+        logoLink.addEventListener('click', function(e) {
+            clickCount++;
+            
+            // إعادة تصفير العداد بعد ثانية واحدة
+            setTimeout(() => { clickCount = 0; }, 1000);
+
+            if (clickCount === 3) {
+                e.preventDefault(); // منع الانتقال للصفحة الرئيسية
+                const password = prompt("منطقة خاصة، أدخل الرمز:");
+                if (password === "jameel") {
+                    window.location.href = "Admin.html";
+                } else if (password !== null) {
+                    alert("الرمز خاطئ!");
+                }
+                clickCount = 0;
+            }
+        });
+    }
+
+    // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
+    window.goToAdmin = function() {
+        const password = prompt("يرجى إدخال كلمة السر:");
+        if (password === "jameel") {
+            window.location.href = "Admin.html";
+        } else if (password !== null) {
+            alert("كلمة السر خاطئة!");
+        }
+    }
+</script>
+
+
+
+</body>
+</html>

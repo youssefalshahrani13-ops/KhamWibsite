@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5 أخطاء كتابية تقتل الإعلان | حبار</title>
+    <link rel="stylesheet" href="Habbar01.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="index.html" id="adminLink">حبار</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="index.html">الرئيسية</a></li>
+            <li><a href="Habbar01.html">المنشورات</a></li>
+            <li><a href="Request.html">طلب تعاون</a></li>
+            <li><a href="javascript:void(0)" onclick="goToAdmin()">الإدارة 🔒</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<body>
+
+    
+<div class="container">
+    <section class="product-hero">
+        <div class="product-image">
+            <img src="Cover.jpg" alt="غلاف الكتاب">
+        </div>
+        
+        <div class="product-info">
+            <h3 class="main-title">5 أخطاء كتابية تقتل الإعلان</h3>
+            <p class="description"> 
+                 أتمنى أن يكون هذا الدليل البسيط مفيد لكم وقابل للتطبيق 
+          <br>       كما حرصت
+                 وتقييمكم يهمّني. 
+            </p>
+            
+            <div class="action-buttons">
+                <a href="5 spelling mistakes that kill an advertisement.pdf" download class="download-btn">
+                    تحميل الملف (PDF)
+                </a>
+                <button onclick="togglePDF()" class="preview-btn">تصفح</button>
+            </div>
+        </div>
+    </section>
+
+    <section id="pdfViewer" class="pdf-viewer-section">
+        <div class="pdf-container">
+            <iframe 
+                src="5 spelling mistakes that kill an advertisement.pdf#toolbar=0" 
+                width="100%" 
+                height="600px">
+            </iframe>
+        </div>
+    </section>
+
+    <hr class="separator">
+
+    <header class="page-header">
+        <h2>المراجعات</h2>
+        <p class="add-review-link" onclick="toggleForm()"> إضافة مراجعة+</p>
+    </header>
+
+    <div id="form" class="input-section">
+        <div class="rating-input">
+            <input type="radio" name="star" id="star5" value="5"><label for="star5">★</label>
+            <input type="radio" name="star" id="star4" value="4"><label for="star4">★</label>
+            <input type="radio" name="star" id="star3" value="3"><label for="star3">★</label>
+            <input type="radio" name="star" id="star2" value="2"><label for="star2">★</label>
+            <input type="radio" name="star" id="star1" value="1"><label for="star1">★</label>
+        </div>
+        
+        <textarea id="commentText" placeholder="اكتب مراجعتك هنا..."></textarea> 
+        <input type="text" id="username" placeholder="الاسم">
+
+        <div class="form-actions">
+            <button onclick="publishComment()">نشر</button>
+            <button class="btn-cancel" onclick="toggleForm()">إلغاء</button>
+        </div>
+    </div>
+
+    <div id="commentsList" class="reviews-grid"></div>
+</div>
+
+<script type="module">
+    // ... (نفس كود Firebase السابق بدون تغيير) ...
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const commentsRef = ref(db, 'reviews');
+
+    // دالة إظهار/إخفاء الـ PDF
+    window.togglePDF = function() {
+        const viewer = document.getElementById('pdfViewer');
+        viewer.classList.toggle('show');
+    }
+
+    window.toggleForm = function() {
+        const form = document.getElementById('form');
+        form.classList.toggle('show');
+    }
+
+    window.publishComment = function() {
+        const name = document.getElementById('username').value;
+        const text = document.getElementById('commentText').value;
+        const starElement = document.querySelector('input[name="star"]:checked');
+        const bookName = "5 أخطاء كتابية تقتل الإعلان";
+
+        if (name && text && starElement) {
+            push(commentsRef, {
+                bookTitle: bookName,
+                name: name,
+                comment: text,
+                rating: parseInt(starElement.value)
+            });
+            toggleForm();
+            document.getElementById('username').value = "";
+            document.getElementById('commentText').value = "";
+            starElement.checked = false;
+        } else {
+            alert("يرجى إكمال جميع الحقول والتقييم");
+        }
+    }
+
+    onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val();
+        const list = document.getElementById('commentsList');
+        list.innerHTML = "";
+        if (data) {
+            Object.values(data).reverse().forEach(item => {
+                let stars = "★".repeat(item.rating);
+                list.innerHTML += `
+                    <div class="comment-card">
+                        <div class="book-title-display">${item.bookTitle}</div>
+                        <div class="stars-display">${stars}</div>
+                        <div class="text">${item.comment}</div>
+                        <span class="username-bottom">— ${item.name}</span>
+                    </div>`;
+            });
+        }
+    });
+
+
+    window.goToAdmin = function() {
+    const password = prompt("يرجى إدخال كلمة السر للدخول لوحة التحكم:");
+    
+    // يمكنك تغيير '1234' لأي كلمة سر تريدها
+    if (password === "jameel") { 
+        window.location.href = "Admin.html"; // اسم صفحة الأجوبة
+    } else if (password !== null) {
+        alert("كلمة السر خاطئة! لا تملك صلاحية الوصول.");
+    }
+}
+
+</script>
+
+<div style="text-align: center; margin-top: 50px; opacity: 0.5;">
+   <div class="logo">
+    <a href="index.html" id="adminLink" style="text-decoration: none; color: inherit;">حبار</a>
+</div>
+
+
+
+
+
+
+<script>
+    // 1. منطق المنيو البرجر (لفتح القائمة في الجوال)
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            // حركة اختيارية تجعل خطوط البرجر تتحول لـ X إذا أردت إضافة CSS لها لاحقاً
+            menuToggle.classList.toggle('is-active');
+        });
+    }
+
+    // إغلاق المنيو عند الضغط على أي رابط (لتحسين تجربة المستخدم)
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+
+    // 2. منطق الدخول السري للإدارة (3 ضغطات على اللوجو)
+    let clickCount = 0;
+    const logoLink = document.getElementById('adminLink');
+
+    if (logoLink) {
+        logoLink.addEventListener('click', function(e) {
+            clickCount++;
+            
+            // إعادة تصفير العداد بعد ثانية واحدة
+            setTimeout(() => { clickCount = 0; }, 1000);
+
+            if (clickCount === 3) {
+                e.preventDefault(); // منع الانتقال للصفحة الرئيسية
+                const password = prompt("منطقة خاصة، أدخل الرمز:");
+                if (password === "jameel") {
+                    window.location.href = "Admin.html";
+                } else if (password !== null) {
+                    alert("الرمز خاطئ!");
+                }
+                clickCount = 0;
+            }
+        });
+    }
+
+    // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
+    window.goToAdmin = function() {
+        const password = prompt("يرجى إدخال كلمة السر:");
+        if (password === "jameel") {
+            window.location.href = "Admin.html";
+        } else if (password !== null) {
+            alert("كلمة السر خاطئة!");
+        }
+    }
+</script>
+</body>
+</html>
+
