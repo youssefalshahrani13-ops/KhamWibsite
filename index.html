@@ -7,7 +7,40 @@
     <link rel="stylesheet" href="Habbar01.css">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 </head>
+<style>
+    /* 1. رفع المحتوى للأعلى في الكمبيوتر والجوال */
+    .main-hero {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 65vh !important; /* تقليل المساحة ليرتفع المحتوى */
+        margin-top: -80px !important; /* سحب يدوي للأعلى */
+        text-align: center;
+    }
 
+    /* 2. ترتيب الأزرار فوق بعضها في الجوال */
+    @media screen and (max-width: 768px) {
+        .hero-cta {
+            display: flex !important;
+            flex-direction: column !important; /* ترتيب عمودي */
+            gap: 15px !important;
+            width: 100% !important;
+            max-width: 300px !important; /* لضمان عدم تمددها بشكل مبالغ */
+            margin: 0 auto 40px auto !important;
+        }
+
+        .primary-btn, .secondary-btn {
+            width: 100% !important; /* الزر يأخذ كامل عرض الحاوية */
+            margin: 0 !important;
+            text-align: center !important;
+        }
+
+        .main-hero {
+            margin-top: -40px !important; /* موازنة الارتفاع للجوال */
+        }
+    }
+</style>
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">
@@ -126,6 +159,7 @@
 </body>
 
 </html>
+
 
 
 
