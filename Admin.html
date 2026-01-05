@@ -2,20 +2,71 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم الطلبات | حبّار</title>
     <link rel="stylesheet" href="Habbar01.css">
     <style>
-        .request-card { background: white; color: #333; padding: 25px; border-radius: 20px; text-align: right; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .req-tag { background: #042de2; color: white; padding: 4px 10px; border-radius: 5px; font-size: 12px; }
-        .req-info { margin-top: 15px; font-size: 14px; border-top: 1px solid #eee; padding-top: 10px; }
+        /* تصحيح العناوين والتباعد في الجوال */
+        .main-title {
+            margin-top: 20px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        /* تنسيق كروت الطلبات لتكون متجاوبة */
+        .request-card { 
+            background: white; 
+            color: #333; 
+            padding: 20px; 
+            border-radius: 20px; 
+            text-align: right; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
+            width: 100%; /* تضمن عدم خروج الكرت عن الشاشة */
+            box-sizing: border-box;
+        }
+
+        .req-tag { 
+            background: #042de2; 
+            color: white; 
+            padding: 4px 10px; 
+            border-radius: 5px; 
+            font-size: 12px; 
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .req-info { 
+            margin-top: 15px; 
+            font-size: 14px; 
+            border-top: 1px solid #eee; 
+            padding-top: 10px; 
+        }
+
+        .req-info p {
+            margin: 8px 0;
+            word-wrap: break-word; /* لضمان عدم خروج النصوص الطويلة مثل الإيميلات */
+        }
+
         .req-info b { color: #042de2; }
+
+        /* تحسين شبكة العرض في الجوال */
+        @media (max-width: 768px) {
+            .reviews-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
+
+<body>
 
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">
-            <a href="index.html" id="adminLink">حبار</a>
+            <a href="index.html" id="adminLink" style="text-decoration: none !important; color: #042de2 !important;">حبار</a>
         </div>
         
         <div class="menu-toggle" id="mobile-menu">
@@ -33,8 +84,6 @@
     </div>
 </nav>
 
-
-<body>
 <div class="container">
     <h1 class="main-title">طلبات التعاون الواردة</h1>
     <div id="requestsList" class="reviews-grid">
@@ -45,7 +94,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    const firebaseConfig = { /* نفس الإعدادات السابقة */ 
+    const firebaseConfig = {
         apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
         authDomain: "comments-test01.firebaseapp.com",
         databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
@@ -58,6 +107,18 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
+    // حماية الصفحة
+    const auth = sessionStorage.getItem('isAdmin');
+    if (!auth) {
+        const pass = prompt("منطقة محظورة، أدخل كلمة السر:");
+        if (pass === "kham") {
+            sessionStorage.setItem('isAdmin', 'true');
+        } else {
+            alert("وصول مرفوض");
+            window.location.href = "index.html";
+        }
+    }
+
     onValue(ref(db, 'collaboration_requests'), (snapshot) => {
         const list = document.getElementById('requestsList');
         list.innerHTML = "";
@@ -66,97 +127,54 @@
             Object.values(data).reverse().forEach(req => {
                 list.innerHTML += `
                     <div class="request-card">
-                        <span class="req-tag">${req.represent}</span>
-                        <h3>${req.name}</h3>
+                        <span class="req-tag">${req.represent || 'جهة غير محددة'}</span>
+                        <h3 style="margin:5px 0">${req.name}</h3>
                         <div class="req-info">
                             <p><b>المجال:</b> ${req.field}</p>
                             <p><b>الخدمة:</b> ${req.service}</p>
                             <p><b>الميزانية:</b> ${req.budget}</p>
                             <p><b>التواصل:</b> ${req.contact}</p>
-                            <small style="color:#999">${req.date}</small>
+                            <small style="color:#999; display:block; margin-top:10px">${req.date || ''}</small>
                         </div>
                     </div>`;
             });
+        } else {
+            list.innerHTML = "<p style='text-align:center'>لا توجد طلبات حالياً.</p>";
         }
     });
-
-
-
-
-
-
-    // حماية بسيطة عند فتح الصفحة مباشرة
-const auth = sessionStorage.getItem('isAdmin');
-
-if (!auth) {
-    const pass = prompt("منطقة محظورة، أدخل كلمة السر:");
-    if (pass === "kham") {
-        sessionStorage.setItem('isAdmin', 'true');
-    } else {
-        alert("وصول مرفوض");
-        window.location.href = "index.html"; // يرجعه للرئيسية
-    }
-}
 </script>
 
-
 <script>
-    // 1. منطق المنيو البرجر (لفتح القائمة في الجوال)
+    // منطق المنيو واللوجو
     const menuToggle = document.querySelector('#mobile-menu');
     const navLinks = document.querySelector('.nav-links');
 
     if (menuToggle) {
-        menuToggle.addEventListener('click', function() {
+        menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            // حركة اختيارية تجعل خطوط البرجر تتحول لـ X إذا أردت إضافة CSS لها لاحقاً
-            menuToggle.classList.toggle('is-active');
         });
     }
 
-    // إغلاق المنيو عند الضغط على أي رابط (لتحسين تجربة المستخدم)
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('active');
-        });
-    });
-
-    // 2. منطق الدخول السري للإدارة (3 ضغطات على اللوجو)
     let clickCount = 0;
     const logoLink = document.getElementById('adminLink');
-
     if (logoLink) {
-        logoLink.addEventListener('click', function(e) {
+        logoLink.addEventListener('click', (e) => {
             clickCount++;
-            
-            // إعادة تصفير العداد بعد ثانية واحدة
             setTimeout(() => { clickCount = 0; }, 1000);
-
             if (clickCount === 3) {
-                e.preventDefault(); // منع الانتقال للصفحة الرئيسية
-                const password = prompt("منطقة خاصة، أدخل الرمز:");
-                if (password === "kham") {
-                    window.location.href = "Admin.html";
-                } else if (password !== null) {
-                    alert("الرمز خاطئ!");
-                }
+                e.preventDefault();
+                const password = prompt("أدخل الرمز:");
+                if (password === "kham") window.location.href = "Admin.html";
                 clickCount = 0;
             }
         });
     }
 
-    // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
     window.goToAdmin = function() {
         const password = prompt("يرجى إدخال كلمة السر:");
-        if (password === "kham") {
-            window.location.href = "Admin.html";
-        } else if (password !== null) {
-            alert("كلمة السر خاطئة!");
-        }
+        if (password === "kham") window.location.href = "Admin.html";
     }
 </script>
 
-
-
 </body>
-
 </html>
