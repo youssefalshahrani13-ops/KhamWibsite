@@ -1,3 +1,20 @@
+/* هذا التنسيق سيطبق فقط على الشاشات التي يقل عرضها عن 768 بكسل (الجوال) */
+@media (max-width: 768px) {
+    .action-buttons {
+        display: flex;
+        flex-direction: column; /* تحويل اتجاه الأزرار لتصبح فوق بعضها */
+        gap: 10px;              /* إضافة مسافة بين الزرين */
+        width: 100%;            /* جعل الحاوية تأخذ عرض الشاشة بالكامل */
+    }
+
+    .download-btn, .preview-btn {
+        width: 100%;            /* جعل كل زر يأخذ كامل العرض المتاح */
+        text-align: center;     /* تسيط النص داخل الأزرار */
+        box-sizing: border-box; /* لضمان عدم خروج الأزرار عن إطار الشاشة */
+    }
+}
+
+
 /* تنسيق شريط التنقل العلوي */
 .navbar {
     position: fixed;      /* يجعله ثابت لا يتحرك مع التمرير */
@@ -742,3 +759,4 @@ iframe { border: none; border-radius: 10px; }
     transform: translateY(-2px); /* رفعة بسيطة تعطي شعور بالضغط */
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
+
