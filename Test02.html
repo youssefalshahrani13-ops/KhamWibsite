@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام تعليقات مباشر</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; width: 100%; max-width: 500px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h2 { color: #1c1e21; text-align: center; }
+        input, textarea { width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; background: #f5f6f7; }
+        textarea { height: 100px; resize: none; }
+        button { width: 100%; background-color: #1877f2; color: white; border: none; padding: 12px; margin-top: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        button:hover { background-color: #166fe5; }
+        #commentsList { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+        .comment-card { background: #fff; border: 1px solid #e5e5e5; padding: 15px; border-radius: 12px; margin-bottom: 15px; position: relative; }
+        .username { font-weight: bold; color: #1c1e21; display: block; margin-bottom: 5px; }
+        .text { color: #4b4f56; line-height: 1.4; }
+        .time { font-size: 11px; color: #90949c; display: block; margin-top: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>التعليقات</h2>
+    <input type="text" id="username" placeholder="اكتب اسمك هنا...">
+    <textarea id="commentText" placeholder="بماذا تفكر؟"></textarea>
+    <button onclick="publishComment()">نشر الآن</button>
+
+    <div id="commentsList">
+        </div>
+</div>
+
+<script type="module">
+    // استيراد أدوات Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+    // إعداداتك الخاصة التي أرسلتها
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025",
+        measurementId: "G-65MJFZSBCQ"
+    };
+
+    // ربط الكود بمشروعك
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const commentsRef = ref(db, 'user_comments');
+
+    // دالة النشر
+    window.publishComment = function() {
+        const userField = document.getElementById('username');
+        const textField = document.getElementById('commentText');
+
+        if (userField.value.trim() !== "" && textField.value.trim() !== "") {
+            push(commentsRef, {
+                name: userField.value,
+                comment: textField.value,
+                timestamp: new Date().toLocaleString('ar-SA')
+            });
+            textField.value = ""; // مسح النص بعد الإرسال
+        } else {
+            alert("يا بطل، اكتب اسمك وتعليقك أولاً!");
+        }
+    }
+
+    // عرض التعليقات فوراً عند حدوث أي تغيير في السحاب
+    onValue(commentsRef, (snapshot) => {
+        const data = snapshot.val();
+        const list = document.getElementById('commentsList');
+        list.innerHTML = ""; // تنظيف القائمة قبل التحديث
+
+        if (data) {
+            // تحويل البيانات لمصفوفة وعرضها من الأحدث للأقدم
+            Object.values(data).reverse().forEach(item => {
+                const card = `
+                    <div class="comment-card">
+                        <span class="username">${item.name}</span>
+                        <div class="text">${item.comment}</div>
+                        <span class="time">${item.timestamp}</span>
+                    </div>
+                `;
+                list.innerHTML += card;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
