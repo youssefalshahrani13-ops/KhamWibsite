@@ -3,31 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الطلبات | حبّار</title>
+    <title>لوحة التحكم الشاملة | حبّار</title>
     <link rel="stylesheet" href="Habbar01.css">
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* تصحيح العناوين والتباعد في الجوال */
-        .main-title {
-            margin-top: 20px;
-            font-size: 28px;
-            text-align: center;
-        }
-
-        /* تنسيق كروت الطلبات لتكون متجاوبة */
-        .request-card { 
+        .main-title { margin-top: 20px; font-size: 28px; text-align: center; color: white; }
+        .section-title { margin-top: 40px; font-size: 22px; text-align: right; border-right: 5px solid #042de2; padding-right: 15px; color: white; }
+        
+        /* تنسيق الكروت الموحد */
+        .admin-card { 
             background: white; 
             color: #333; 
             padding: 20px; 
             border-radius: 20px; 
             text-align: right; 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2); 
-            width: 100%; /* تضمن عدم خروج الكرت عن الشاشة */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); 
+            width: 100%; 
             box-sizing: border-box;
+            position: relative;
         }
 
-        .req-tag { 
+        .card-tag { 
             background: #042de2; 
             color: white; 
             padding: 4px 10px; 
@@ -37,21 +34,36 @@
             margin-bottom: 10px;
         }
 
-        .req-info { 
+        /* تمييز تاج التعليقات بلون مختلف قليلاً */
+        .review-tag { background: #042de2; }
+
+        .card-info { 
             margin-top: 15px; 
             font-size: 14px; 
             border-top: 1px solid #eee; 
             padding-top: 10px; 
         }
 
-        .req-info p {
-            margin: 8px 0;
-            word-wrap: break-word; /* لضمان عدم خروج النصوص الطويلة مثل الإيميلات */
+        .card-info p { margin: 8px 0; word-wrap: break-word; }
+        .card-info b { color: #042de2; }
+
+        .delete-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            margin-top: 15px;
+            width: 100%;
+            transition: 0.3s;
         }
+        .delete-btn:hover { background: #cc0000; }
 
-        .req-info b { color: #042de2; }
+        .separator { border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 40px 0; }
 
-        /* تحسين شبكة العرض في الجوال */
         @media (max-width: 768px) {
             .reviews-grid {
                 display: flex;
@@ -64,6 +76,9 @@
 </head>
 
 <body>
+
+
+    
 
 <nav class="navbar">
     <div class="nav-container">
@@ -86,15 +101,29 @@
     </div>
 </nav>
 
+
+
+
+
 <div class="container">
-    <h1 class="main-title">طلبات التعاون الواردة</h1>
+    <h1 class="main-title">إدارة طلبات التعاون</h1>
+
+    <h2 class="section-title">طلبات التعاون الواردة</h2>
     <div id="requestsList" class="reviews-grid">
-        </div>
+        <p style="text-align:center; color:white">جاري التحميل...</p>
+    </div>
+
+    <hr class="separator">
+
+    <h2 class="section-title">إدارة التعليقات </h2>
+    <div id="commentsList" class="reviews-grid">
+        <p style="text-align:center; color:white">جاري التحميل...</p>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
@@ -121,65 +150,80 @@
         }
     }
 
+    // دالة الحذف الشاملة
+    window.deleteItem = function(path, itemId) {
+        if (confirm("هل أنت متأكد من حذف هذا العنصر نهائياً؟")) {
+            const itemRef = ref(db, `${path}/${itemId}`);
+            remove(itemRef).then(() => {
+                alert("تم الحذف بنجاح");
+            }).catch((error) => {
+                alert("حدث خطأ أثناء الحذف");
+            });
+        }
+    }
+
+    // 1. جلب وعرض طلبات التعاون
     onValue(ref(db, 'collaboration_requests'), (snapshot) => {
         const list = document.getElementById('requestsList');
         list.innerHTML = "";
         const data = snapshot.val();
         if (data) {
-            Object.values(data).reverse().forEach(req => {
+            Object.keys(data).reverse().forEach(key => {
+                const req = data[key];
                 list.innerHTML += `
-                    <div class="request-card">
-                        <span class="req-tag">${req.represent || 'جهة غير محددة'}</span>
+                    <div class="admin-card">
+                        <span class="card-tag">${req.represent || 'جهة غير محددة'}</span>
                         <h3 style="margin:5px 0">${req.name}</h3>
-                        <div class="req-info">
-                            <p><b>المجال:</b> ${req.field}</p>
+                        <div class="card-info">
+                            <p><b>المجال:</b> ${req.field || 'غير محدد'}</p>
                             <p><b>الخدمة:</b> ${req.service}</p>
-                            <p><b>الميزانية:</b> ${req.budget}</p>
+                            <p><b>الميزانية:</b> ${req.budget || 'غير محدد'}</p>
                             <p><b>التواصل:</b> ${req.contact}</p>
-                            <small style="color:#999; display:block; margin-top:10px">${req.date || ''}</small>
                         </div>
+                        <button class="delete-btn" onclick="deleteItem('collaboration_requests', '${key}')">حذف الطلب</button>
                     </div>`;
             });
         } else {
-            list.innerHTML = "<p style='text-align:center'>لا توجد طلبات حالياً.</p>";
+            list.innerHTML = "<p style='text-align:center; color:white'>لا توجد طلبات حالياً.</p>";
+        }
+    });
+
+    // 2. جلب وعرض التعليقات (المراجعات)
+    onValue(ref(db, 'reviews'), (snapshot) => {
+        const list = document.getElementById('commentsList');
+        list.innerHTML = "";
+        const data = snapshot.val();
+        if (data) {
+            Object.keys(data).reverse().forEach(key => {
+                const review = data[key];
+                const stars = "★".repeat(review.rating || 0);
+                list.innerHTML += `
+                    <div class="admin-card">
+                        <span class="card-tag review-tag">${review.bookTitle || 'مراجعة'}</span>
+                        <h3 style="margin:5px 0; color:#ff9800">${stars}</h3>
+                        <div class="card-info">
+                            <p><b>الاسم:</b> ${review.name}</p>
+                            <p><b>التعليق:</b> "${review.comment}"</p>
+                        </div>
+                        <button class="delete-btn" onclick="deleteItem('reviews', '${key}')">حذف التعليق</button>
+                    </div>`;
+            });
+        } else {
+            list.innerHTML = "<p style='text-align:center; color:white'>لا توجد مراجعات حالياً.</p>";
         }
     });
 </script>
 
 <script>
-    // منطق المنيو واللوجو
+    // منطق المنيو للجوال
     const menuToggle = document.querySelector('#mobile-menu');
     const navLinks = document.querySelector('.nav-links');
-
     if (menuToggle) {
         menuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
         });
     }
-
-    let clickCount = 0;
-    const logoLink = document.getElementById('adminLink');
-    if (logoLink) {
-        logoLink.addEventListener('click', (e) => {
-            clickCount++;
-            setTimeout(() => { clickCount = 0; }, 1000);
-            if (clickCount === 3) {
-                e.preventDefault();
-                const password = prompt("أدخل الرمز:");
-                if (password === "jameel") window.location.href = "Admin.html";
-                clickCount = 0;
-            }
-        });
-    }
-
-    window.goToAdmin = function() {
-        const password = prompt("يرجى إدخال كلمة السر:");
-        if (password === "jameel") window.location.href = "Admin.html";
-    }
 </script>
 
 </body>
 </html>
-
-
-
