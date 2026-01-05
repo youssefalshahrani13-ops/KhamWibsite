@@ -1,3 +1,89 @@
+/* --- الأزرار الأساسية (نشر، إرسال، تحميل PDF) --- */
+/* خلفية بيضاء، نص أزرق، وعند الهوفر يبقى النص أزرق مع تأثير بسيط */
+.submit-full, 
+.form-actions button:first-child, 
+.download-btn,
+.primary-btn {
+    background: white !important;
+    color: #042de2 !important;
+    font-weight: bold !important;
+    border: none !important;
+    border-radius: 12px;
+    padding: 12px 25px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    min-width: 150px;
+}
+
+/* هوفر الأزرار الأساسية: تعتيم بسيط للخلفية البيضاء */
+.submit-full:hover, 
+.form-actions button:first-child:hover, 
+.download-btn:hover,
+.primary-btn:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-2px);
+}
+
+/* --- الأزرار الثانوية (تصفح، مسح النموذج، إلغاء) --- */
+/* بدون خلفية، إطار أبيض، نص أبيض، وعند الهوفر خلفية باهتة */
+.reset-btn, 
+.btn-cancel, 
+.preview-btn,
+.secondary-btn {
+    background: transparent !important;
+    color: white !important;
+    font-weight: bold !important;
+    border: 1px solid white !important;
+    border-radius: 12px;
+    padding: 12px 25px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    text-align: center;
+    font-size: 16px;
+    text-decoration: none;
+    display: inline-block;
+    min-width: 150px;
+}
+
+/* هوفر الأزرار الثانوية: خلفية بيضاء باهتة جداً */
+.reset-btn:hover, 
+.btn-cancel:hover, 
+.preview-btn:hover,
+.secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+/* --- تعديلات خاصة بصفحة Request (ترتيب الأزرار) --- */
+.button-group {
+    display: flex;
+    flex-direction: row-reverse; /* يجعل الزر الأول (إرسال) يميناً والثاني (مسح) يساراً */
+    gap: 15px;
+    justify-content: flex-start;
+    margin-top: 25px;
+}
+
+/* الجوال: الأزرار فوق بعض */
+@media (max-width: 768px) {
+    .button-group, .form-actions, .action-buttons {
+        flex-direction: column !important;
+    }
+    .download-btn, .preview-btn, .submit-full, .reset-btn {
+        width: 100% !important;
+    }
+}
+
+
+
+
+
+
+
+
 /* --- تنسيق موحد لكروت المراجعات والطلبات (Admin & Public) --- */
 .reviews-grid { 
     display: grid; 
