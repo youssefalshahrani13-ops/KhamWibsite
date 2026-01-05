@@ -93,7 +93,15 @@
             <input type="text" id="contactInfo" placeholder="كيف نتواصل معك؟" required>
         </div>
 
+
+        <div class="button-group">
+    <button class="reset-btn" onclick="resetForm()">مسح النموذج</button>
         <button class="submit-full" onclick="sendRequest()">إرسال الطلب</button>
+
+</div>
+
+
+
     </div>
 </div>
 
@@ -134,6 +142,12 @@
             alert("يرجى ملء الحقول الأساسية");
         }
     }
+    window.resetForm = function() {
+    if (confirm("هل أنت متأكد من رغبتك في مسح كافة البيانات؟")) {
+        // إعادة تحميل الصفحة هي أسرع طريقة لمسح كافة الحقول والراديو بوتونز
+        location.reload(); 
+    }
+}
 </script>
 
 
@@ -175,7 +189,7 @@
             if (clickCount === 3) {
                 e.preventDefault(); // منع الانتقال للصفحة الرئيسية
                 const password = prompt("منطقة خاصة، أدخل الرمز:");
-                if (password === "jay") {
+                if (password === "jameel") {
                     window.location.href = "Admin.html";
                 } else if (password !== null) {
                     alert("الرمز خاطئ!");
@@ -188,7 +202,7 @@
     // 3. دالة goToAdmin الاحتياطية (لو ضغطت على زر الإدارة في المنيو)
     window.goToAdmin = function() {
         const password = prompt("يرجى إدخال كلمة السر:");
-        if (password === "jay") {
+        if (password === "jameel") {
             window.location.href = "Admin.html";
         } else if (password !== null) {
             alert("كلمة السر خاطئة!");
@@ -200,6 +214,4 @@
 
 
 </body>
-
 </html>
-
