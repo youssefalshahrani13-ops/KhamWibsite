@@ -34,18 +34,12 @@
             margin-bottom: 10px;
         }
 
-        /* تمييز تاج التعليقات بلون مختلف قليلاً */
-        .review-tag { background: #042de2; }
-
         .card-info { 
             margin-top: 15px; 
             font-size: 14px; 
             border-top: 1px solid #eee; 
             padding-top: 10px; 
         }
-
-        .card-info p { margin: 8px 0; word-wrap: break-word; }
-        .card-info b { color: #042de2; }
 
         .delete-btn {
             background: #ff4d4d;
@@ -64,6 +58,35 @@
 
         .separator { border: 0; height: 1px; background: rgba(255,255,255,0.2); margin: 40px 0; }
 
+        /* --- تعديل عرض وحجم الصور (المنشورات) هنا --- */
+        .admin-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* جعل الصور بجانب بعضها */
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .admin-gallery-grid .admin-card {
+            padding: 10px; /* تقليل الحواف لصور المعرض */
+        }
+
+        .admin-gallery-grid img {
+            width: 100%;
+            height: 150px; /* تحديد ارتفاع موحد للصور */
+            object-fit: cover; /* لضمان عدم تمدد الصورة بشكل خاطئ */
+            border-radius: 10px;
+        }
+        /* ------------------------------------------ */
+
+        .upload-container {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px dashed #fff;
+            margin-top: 15px;
+        }
+
         @media (max-width: 768px) {
             .reviews-grid {
                 display: flex;
@@ -76,14 +99,10 @@
 </head>
 
 <body>
-
-
-    
-
 <nav class="navbar">
     <div class="nav-container">
         <div class="logo">
-            <a href="index.html" id="adminLink" style="text-decoration: none !important; color: #042de2 !important;">حبار</a>
+            <a href="index.html" id="adminLink">حبار</a>
         </div>
         
         <div class="menu-toggle" id="mobile-menu">
@@ -94,19 +113,18 @@
 
         <ul class="nav-links">
             <li><a href="index.html">الرئيسية</a></li>
-            <li><a href="Habbar01.html">المنشورات</a></li>
+            <li><a href="Habbar01.html">المحتوى</a></li>
             <li><a href="Request.html">طلب تعاون</a></li>
+                        <li><a href="Gallary.html"> المنشورات</a></li>
+
             <li><a href="javascript:void(0)" onclick="goToAdmin()">الإدارة </a></li>
         </ul>
     </div>
 </nav>
 
 
-
-
-
 <div class="container">
-    <h1 class="main-title">إدارة الطلبات والتعليقات</h1>
+    <h1 class="main-title">إدارة الطلبات والتعليقات والمحتوى</h1>
 
     <h2 class="section-title">طلبات التعاون </h2>
     <div id="requestsList" class="reviews-grid">
@@ -119,11 +137,26 @@
     <div id="commentsList" class="reviews-grid">
         <p style="text-align:center; color:white">جاري التحميل...</p>
     </div>
+
+    <hr class="separator">
+
+    <h2 class="section-title"> المنشورات </h2>
+
+    <div class="upload-container">
+        <p style="color: white; margin-bottom: 15px;">إضافة منشور صوري جديد للموقع:</p>
+        <input type="file" id="adminImageInput" accept="image/*" style="display: none;">
+        <button class="submit-full" onclick="document.getElementById('adminImageInput').click()">+ ارفع صورة للمعرِض</button>
+        <p id="uploadStatus" style="color: #61dafb; margin-top: 10px;"></p>
+    </div>
+
+    <div id="adminGalleryList" class="admin-gallery-grid">
+        <p style="color: white; text-align: center; grid-column: 1/-1;">جاري تحميل معرض الصور...</p>
+    </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getDatabase, ref, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
@@ -175,9 +208,7 @@
                         <span class="card-tag">${req.represent || 'جهة غير محددة'}</span>
                         <h3 style="margin:5px 0">${req.name}</h3>
                         <div class="card-info">
-                            <p><b>المجال:</b> ${req.field || 'غير محدد'}</p>
                             <p><b>الخدمة:</b> ${req.service}</p>
-                            <p><b>الميزانية:</b> ${req.budget || 'غير محدد'}</p>
                             <p><b>التواصل:</b> ${req.contact}</p>
                         </div>
                         <button class="delete-btn" onclick="deleteItem('collaboration_requests', '${key}')">حذف الطلب</button>
@@ -188,7 +219,7 @@
         }
     });
 
-    // 2. جلب وعرض التعليقات (المراجعات)
+    // 2. جلب وعرض التعليقات
     onValue(ref(db, 'reviews'), (snapshot) => {
         const list = document.getElementById('commentsList');
         list.innerHTML = "";
@@ -196,11 +227,9 @@
         if (data) {
             Object.keys(data).reverse().forEach(key => {
                 const review = data[key];
-                const stars = "★".repeat(review.rating || 0);
                 list.innerHTML += `
                     <div class="admin-card">
                         <span class="card-tag review-tag">${review.bookTitle || 'مراجعة'}</span>
-                        <h3 style="margin:5px 0; color:#ff9800">${stars}</h3>
                         <div class="card-info">
                             <p><b>الاسم:</b> ${review.name}</p>
                             <p><b>التعليق:</b> "${review.comment}"</p>
@@ -212,10 +241,55 @@
             list.innerHTML = "<p style='text-align:center; color:white'>لا توجد مراجعات حالياً.</p>";
         }
     });
+
+    // إعدادات Cloudinary
+    const CLOUD_NAME = "dzqmuifzk"; 
+    const UPLOAD_PRESET = "Gallary";
+
+    // 3. منطق الرفع
+    document.getElementById('adminImageInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const status = document.getElementById('uploadStatus');
+        status.innerText = "جاري الرفع...";
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('upload_preset', UPLOAD_PRESET);
+
+        try {
+            const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, { method: 'POST', body: formData });
+            const data = await res.json();
+            await push(ref(db, 'interactive_gallery'), {
+                url: data.secure_url,
+                likes: 0,
+                timestamp: Date.now()
+            });
+            status.innerText = "تمت الإضافة بنجاح!";
+            setTimeout(() => status.innerText = "", 3000);
+        } catch (err) { status.innerText = "حدث خطأ!"; }
+    });
+
+    // 4. عرض صور المعرض للحذف
+    onValue(ref(db, 'interactive_gallery'), (s) => {
+        const list = document.getElementById('adminGalleryList');
+        list.innerHTML = "";
+        const data = s.val();
+        if (data) {
+            Object.keys(data).reverse().forEach(k => {
+                list.innerHTML += `
+                    <div class="admin-card">
+                        <img src="${data[k].url}">
+                        <button class="delete-btn" onclick="deleteItem('interactive_gallery', '${k}')">حذف</button>
+                    </div>`;
+            });
+        } else {
+            list.innerHTML = "<p style='color: white; text-align: center; grid-column: 1/-1;'>لا توجد صور.</p>";
+        }
+    });
 </script>
 
 <script>
-    // منطق المنيو للجوال
     const menuToggle = document.querySelector('#mobile-menu');
     const navLinks = document.querySelector('.nav-links');
     if (menuToggle) {
@@ -227,5 +301,3 @@
 
 </body>
 </html>
-
-
