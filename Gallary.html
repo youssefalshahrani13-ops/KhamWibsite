@@ -217,7 +217,25 @@
         }
     };
 </script>
+<script>
+    // كود تشغيل المنيو برجر في الجوال
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
 
+    if (menuToggle) {
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active'); // إظهار وإخفاء القائمة
+            this.classList.toggle('is-active'); // تغيير شكل الزر إذا كان مدعوماً في CSS
+        });
+    }
+
+    // إغلاق المنيو تلقائياً عند الضغط على أي رابط
+    document.querySelectorAll('.nav-links a').forEach(link => {
+        link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+        });
+    });
+</script>
 <script>
     // إغلاق المودال عند الضغط خارجه
     window.onclick = function(event) {
@@ -239,3 +257,4 @@
 </body>
 
 </html>
+
