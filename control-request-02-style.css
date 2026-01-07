@@ -1,0 +1,178 @@
+/* =========================================
+   تنسيق الإدارة الاحترافي - مطابقة هوية "طلب تعاون"
+   ========================================= */
+
+:root {
+    --primary-blue: #042de2;
+    --white: #ffffff;
+    --gray-text: #666666;
+    --nav-bg: #ffffff;
+    --faded-white: rgba(255, 255, 255, 0.15); /* الخلفية الشفافة المعتمدة */
+    --font-main: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+/* الأنميشن الموحد */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* الحاوية الرئيسية (نفس تباعد طلب تعاون) */
+.admin-section {
+    padding: 120px 20px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* الكرت الرئيسي (مطابق تماماً لـ form-card) */
+.admin-card { 
+    background: var(--faded-white); 
+    padding: 40px; 
+    border-radius: 25px; 
+    border: 2px solid var(--white); 
+    backdrop-filter: blur(10px); /* تأثير الزجاج المعتمد */
+    width: 100%;
+    max-width: 1100px;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+/* العناوين (بيضاء لتناسب الخلفية الزرقاء) */
+.admin-card h2 { 
+    color: var(--white); 
+    margin-bottom: 30px; 
+    text-align: center; 
+    font-weight: 700;
+    font-size: 28px;
+}
+
+/* صندوق الإضافة (نفس نمط الـ radio-grid أو q-group) */
+.add-box { 
+    background: rgba(255,255,255,0.1); 
+    padding: 25px; 
+    border-radius: 20px; 
+    margin-bottom: 40px; 
+    display: flex; 
+    gap: 15px; 
+    flex-wrap: wrap; 
+    justify-content: center;
+    border: 1px solid var(--white);
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: 0.3s;
+}
+
+/* حقول الإدخال (نفس ستايل طلب تعاون) */
+.add-box input { 
+    padding: 16px; 
+    border-radius: 12px; 
+    border: none; 
+    background: var(--white); 
+    color: var(--primary-blue); 
+    font-size: 16px;
+    width: 250px;
+}
+
+/* الأزرار (مطابقة تماماً لـ primary-btn و secondary-btn) */
+.btn-add-main, .primary-btn {
+    background-color: var(--white) !important; 
+    color: var(--primary-blue) !important;
+    padding: 12px 28px; 
+    border-radius: 8px; 
+    font-weight: 700; 
+    border: none; 
+    cursor: pointer; 
+    transition: 0.3s ease;
+}
+
+/* تنسيق الجدول ليتناسب مع الخلفية الشفافة */
+.table-responsive { 
+    overflow-x: auto;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: 0.5s;
+}
+
+/* تأكيد محاذاة الجدول ومحتوياته لليمين تماماً */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    direction: rtl; /* التأكد من أن الاتجاه من اليمين لليسار */
+}
+
+th {
+    color: var(--white);
+    padding: 15px;
+    text-align: right; /* محاذاة العناوين يمين */
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+td {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: var(--white);
+    text-align: right; /* جعل البيانات تبدأ من اليمين تحت كلمة عميل */
+    vertical-align: top; /* لضمان بداية النص من الأعلى في حال تعدد الأسطر */
+}
+
+/* لضمان ظهور كافة الخيارات والمعلومات بشكل مرتب */
+td div, td span, td strong {
+    display: block; /* تجعل كل معلومة في سطر مستقل إذا أردت */
+    text-align: right;
+}
+    
+
+td strong { color: var(--white); }
+
+/* تدوير حواف السطر الموحد */
+td:first-child { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(255,255,255,0.2); }
+td:last-child { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(255,255,255,0.2); }
+
+/* أزرار الإجراءات */
+.btn-action {
+    border: none; 
+    padding: 10px 16px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    font-size: 13px; 
+    font-weight: 600; 
+    transition: 0.3s;
+}
+
+/* زر التعديل والمراسلة (نمط شفاف) */
+.edit-btn { background: rgba(255,255,255,0.2); color: var(--white); border: 1px solid var(--white); }
+.chat-btn { background: var(--white); color: var(--primary-blue); }
+.delete-btn { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; }
+
+
+.btn-action:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .add-box input { width: 100%; }
+    .admin-card { padding: 20px; }
+}/* سأضع لك أهم التعديلات الخاصة بالجدول ليتناسب مع البيانات الأكثر عرضاً */
+
+.table-responsive table {
+    width: 100%;
+    min-width: 800px; /* لضمان عدم ضغط البيانات في الشاشات الصغيرة */
+}
+
+.action-group {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.btn-action {
+    padding: 8px 15px;
+    font-size: 12px;
+}
+

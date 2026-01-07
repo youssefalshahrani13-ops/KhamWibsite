@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار |  طلب تعاون</title>
+    <link rel="stylesheet" href="Request-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+   <nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+
+        <ul class="nav-links"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li> 
+        </ul>
+
+        <div class="auth-buttons" id="authSection">
+            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
+            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+
+
+    <div class="main-hero">
+        <div class="container">
+            <header class="header-section">
+                <h1 class="hero-title">حبّار | نموذج طلب تعاون</h1>
+                <p class="hero-subtitle">هذا النموذج مخصص للراغبين في التعاون بخصوص كتابة الإعلانات والمحتوى.</p>
+            </header>
+
+            <div class="form-card">
+                <div class="q-group" id="nameGroup">
+                    <label class="q-title">الاسم الكريم: *</label>
+                    <input type="text" id="guestName" placeholder="اكتب اسمك هنا" class="custom-input-white">
+                </div>
+                
+                <div class="q-group">
+                    <label class="q-title">ما هو مجالك؟ *</label>
+                    <input type="text" id="field" placeholder="مثال: التقنية، العطور، التعليم..." required class="custom-input-white">
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">أنت تمثّل: *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="represent" value="صاحب مشروع"> صاحب مشروع</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="صانع محتوى"> صانع محتوى</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="شركة / فريق"> شركة / فريق</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="فرد"> فرد (خدمة شخصية)</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">ما الخدمة التي تحتاجها؟ *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="service" value="كتابة إعلان"> كتابة إعلان</label>
+                        <label class="radio-item"><input type="radio" name="service" value="كتابة محتوى"> كتابة محتوى</label>
+                        <label class="radio-item"><input type="radio" name="service" value="وصف منتجات"> وصف منتجات</label>
+                        <label class="radio-item"><input type="radio" name="service" value="صفحة هبوط"> صفحة هبوط</label>
+                        <label class="radio-item"><input type="radio" name="service" value="بناء هوية"> بناء رسالة علامة</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">ميزانيتك التقريبية: *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="budget" value="أقل من 500"> أقل من 500 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="500 - 1000"> 500 - 1000 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="1000 - 3000"> 1000 - 3000 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="أكثر من ذلك"> أكثر من ذلك</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label class="q-title" id="contactLabel" style="margin-bottom: 0;">رقم الجوال *</label>
+                        <button type="button" onclick="toggleContactType()" id="toggleBtn" class="switch-contact-btn">
+                             تبديل للبريد الإلكتروني
+                        </button>
+                    </div>
+                    <input type="tel" id="contactInfo" placeholder="05XXXXXXXX" required class="custom-input-white">
+                </div>
+
+                <div class="button-row">
+                    <button type="button" onclick="sendRequest()" class="primary-btn">إرسال الطلب</button>
+                    <button type="button" onclick="resetForm()" class="secondary-btn">مسح النموذج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+            authDomain: "comments-test01.firebaseapp.com",
+            databaseURL: "https://comments-test01-default-rtdb.firebaseio.com/",
+            projectId: "comments-test01",
+            storageBucket: "comments-test01.firebasestorage.app",
+            messagingSenderId: "1061900134848",
+            appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        let currentContactType = "phone"; 
+
+        window.toggleContactType = function() {
+            const label = document.getElementById('contactLabel');
+            const input = document.getElementById('contactInfo');
+            const btn = document.getElementById('toggleBtn');
+
+            if (currentContactType === "phone") {
+                currentContactType = "email";
+                label.innerText = "البريد الإلكتروني *";
+                input.type = "email";
+                input.placeholder = "example@mail.com";
+                input.value = ""; 
+                btn.innerHTML = " تبديل لرقم الجوال";
+            } else {
+                currentContactType = "phone";
+                label.innerText = "رقم الجوال *";
+                input.type = "tel";
+                input.placeholder = "05XXXXXXXX";
+                input.value = ""; 
+                btn.innerHTML = " تبديل للبريد الإلكتروني";
+            }
+        };
+
+        window.sendRequest = function() {
+            let name = localStorage.getItem("userName"); 
+            if (!name) {
+                name = document.getElementById('guestName').value;
+            }
+
+            const field = document.getElementById('field').value;
+            const contact = document.getElementById('contactInfo').value;
+            const represent = document.querySelector('input[name="represent"]:checked')?.value;
+            const service = document.querySelector('input[name="service"]:checked')?.value;
+            const budget = document.querySelector('input[name="budget"]:checked')?.value;
+
+            if (name && represent && service && contact) {
+                database.ref('collaboration_requests').push({
+                    name: name,
+                    represent: represent,
+                    field: field,
+                    service: service,
+                    budget: budget,
+                    contact: contact,
+                    contactType: currentContactType,
+                    date: new Date().toLocaleString('ar-SA'),
+                    createdAt: Date.now()
+                }).then(() => {
+                    alert("تم إرسال طلبك بنجاح يا " + name + ". حبار يتطلع للعمل معك!");
+                    window.location.href = "index.html";
+                });
+            } else {
+                alert("يرجى ملء كافة البيانات المطلوبة (بما في ذلك الاسم)");
+            }
+        };
+
+        window.resetForm = function() {
+            if (confirm("هل أنت متأكد من رغبتك في مسح كافة البيانات؟")) {
+                location.reload(); 
+            }
+        };
+
+        document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    // نستخدم getElementById للتأكد من دقة الاختيار
+    const authSection = document.getElementById("authSection");
+    const navLinksList = document.querySelector(".nav-links");
+
+    if (userName) {
+        // إخفاء حقل الاسم إذا كان مسجلاً
+        const nameGroup = document.getElementById("nameGroup");
+        if (nameGroup) nameGroup.style.display = "none";
+        
+        // حقن أزرار المستخدم
+        if (authSection) {
+            authSection.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <a href="customer-profile02.html" 
+                       style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box; background-color: transparent;"
+                       onmouseover="this.style.color='#7e7e7e'; this.style.borderColor='#7e7e7e';" 
+                       onmouseout="this.style.color='#042de2'; this.style.borderColor='#042de2';">
+                         ${userName} 👤
+                    </a>
+                    <button onclick="logout()" 
+                            style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#ff4d4d';" 
+                            onmouseout="this.style.backgroundColor='#ff4d4d'; this.style.color='white';">
+                        تسجيل خروج
+                    </button>
+                </div>
+            `;
+        }
+
+        // إظهار لوحة التحكم للمدير
+        if (userName === "jameel" && navLinksList) {
+            // نتحقق أولاً هل الرابط موجود مسبقاً لمنع التكرار
+            if (!document.querySelector('a[href="control02.html"]')) {
+                const adminLi = document.createElement("li");
+                adminLi.innerHTML = `<a href="control02.html">لوحة التحكم</a>`;
+                navLinksList.appendChild(adminLi);
+            }
+        }
+    }
+});
+
+
+
+        window.logout = function() { 
+            localStorage.removeItem("userName"); 
+            location.reload(); 
+        }
+    </script>
+</body>
+</html>

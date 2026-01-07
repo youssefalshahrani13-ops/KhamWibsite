@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار | إدارة العملاء</title>
+    <link rel="stylesheet" href="index-02-style.css">
+    <link rel="stylesheet" href="control-coustmers-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+    #usersTable td, thead th { text-align: right !important; padding-right: 25px; }
+    #newPhone, #newName { text-align: right !important; }
+</style>
+</head>
+
+<body>
+
+<nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+        <ul class="nav-links"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li> 
+        </ul>
+        <div class="auth-buttons" id="authSection"></div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+<div class="main-hero admin-section">
+    <div class="admin-card">
+        <h2>🌀 إدارة أعضاء حبار</h2>
+        
+        <div class="add-box">
+            <input type="text" id="newName" placeholder="الاسم الكامل">
+            <input type="tel" id="newPhone" placeholder="رقم الجوال">
+            <button class="primary-btn" onclick="addUser()" style="font-size: 14px; padding: 10px 20px;">إضافة +</button>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                     
+                        
+                    </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const userName = localStorage.getItem("userName");
+    if (userName !== "jameel") {
+        alert("عذراً، هذه المنطقة للمدير فقط.");
+        window.location.href = "index.html";
+    }
+
+    db.collection("users").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+        const tableBody = document.getElementById('usersTable');
+        tableBody.innerHTML = "";
+        
+        let delay = 0.2;
+        snapshot.forEach((doc) => {
+            const user = doc.data();
+            tableBody.innerHTML += `
+                <tr style="animation: fadeIn 0.5s ease forwards; animation-delay: ${delay}s">
+                    <td><strong>${user.name}</strong></td>
+                    <td>${user.phone}</td>
+                    <td>
+                        <div class="action-group">
+                          <button class="btn-action edit-btn" onclick="editName('${doc.id}', '${user.name}')">تعديل الاسم</button>
+                            <button class="btn-action edit-btn" onclick="editPhone('${doc.id}', '${user.phone}')">تعديل الرقم</button>
+                            <button class="btn-action chat-btn" onclick="openChat('${user.name}')">مراسلة </button>
+                            <button class="btn-action delete-btn" style="background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d;" onclick="clearChat('${user.name}')">حذف المحادثة </button>
+                            <button class="btn-action delete-btn" onclick="deleteUser('${doc.id}')">حذف العميل</button>
+                        </div>
+                    </td>
+                </tr>`;
+            delay += 0.1;
+        });
+    });
+
+    window.addUser = function() {
+        const name = document.getElementById('newName').value;
+        const phone = document.getElementById('newPhone').value;
+        if(name && phone) {
+            db.collection("users").add({
+                name, phone, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            document.getElementById('newName').value = "";
+            document.getElementById('newPhone').value = "";
+        }
+    };
+
+    window.deleteUser = function(id) {
+        if(confirm("حذف المستخدم؟")) db.collection("users").doc(id).delete();
+    };
+
+    window.editName = function(id, old) {
+        const n = prompt("الاسم الجديد:", old);
+        if(n) db.collection("users").doc(id).update({ name: n });
+    };
+
+    window.editPhone = function(id, old) {
+        const p = prompt("الرقم الجديد:", old);
+        if(p) db.collection("users").doc(id).update({ phone: p });
+    };
+
+    window.openChat = function(name) {
+        window.location.href = `Chat-Test.html?target=${name}`;
+    };
+
+    window.clearChat = function(name) {
+        if(confirm(`حذف رسائل ${name}؟`)) {
+            db.collection("messages").where("senderName", "==", name).get()
+            .then(q => {
+                const batch = db.batch();
+                q.forEach(d => batch.delete(d.ref));
+                return batch.commit();
+            }).then(() => alert("تم الحذف"));
+        }
+    };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const authSection = document.getElementById("authSection");
+        const navLinksList = document.querySelector(".nav-links");
+
+        if (authSection && userName) {
+            // تحديث أزرار الدخول/الخروج لتطابق ستايل الهوفر الرمادي والأطوال الموحدة
+            authSection.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <a href="customer-profile02.html" 
+                       style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box; background-color: transparent;"
+                       onmouseover="this.style.color='#7e7e7e'; this.style.borderColor='#7e7e7e';" 
+                       onmouseout="this.style.color='#042de2'; this.style.borderColor='#042de2';">
+                        ${userName} 👤
+                    </a>
+
+                    <button onclick="logout()" 
+                            style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#ff4d4d';" 
+                            onmouseout="this.style.backgroundColor='#ff4d4d'; this.style.color='white';">
+                        تسجيل خروج
+                    </button>
+                </div>
+            `;
+        }
+
+        if (navLinksList) {
+            const adminLi = document.createElement("li");
+            adminLi.innerHTML = `<a href="control02.html">لوحة التحكم</a>`;
+            navLinksList.appendChild(adminLi);
+        }
+
+        const menuToggle = document.querySelector('#mobile-menu');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                navLinksList.classList.toggle('active');
+            });
+        }
+    });
+
+    function logout() {
+        localStorage.removeItem("userName");
+        window.location.href = "index.html";
+    }
+
+
+
+
+
+
+
+
+
+window.deleteUser = function(id) {
+    if (confirm("هل أنت متأكد من حذف هذا المستخدم؟ سيتم حذف جميع طلبات التعاون المرتبطة به أيضاً.")) {
+        // جلب البيانات أولاً للحصول على الاسم قبل الحذف
+        db.collection("users").doc(id).get().then((doc) => {
+            if (doc.exists) {
+                const userNameToDelete = doc.data().name;
+                // حذف العميل من Firestore
+                db.collection("users").doc(id).delete().then(() => {
+                    console.log("تم حذف العميل بنجاح");
+                    // ملاحظة: صفحة الطلبات ستلتقط هذا الحذف تلقائياً عبر onSnapshot
+                });
+            }
+        });
+    }
+};
+</script>
+</script>
+
+</body>
+</html>

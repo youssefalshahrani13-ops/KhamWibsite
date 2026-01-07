@@ -1,0 +1,226 @@
+<!DOCTYPE html> 
+<html lang="ar" dir="rtl"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>حبار | إنشاء حساب  </title> 
+    <link rel="stylesheet" href="create-account-02-style.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet"> 
+</head> 
+
+
+
+
+
+
+
+<nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+
+        <ul class="nav-links"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li> 
+        </ul>
+
+        <div class="auth-buttons">
+            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
+            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+<body> 
+    <div class="main-hero"> 
+        <div class="auth-card"> 
+            <h1 class="hero-title">أنشئ حسابك</h1> 
+            <p class="hero-subtitle">انضم إلى مجتمع حبار الإبداعي 🚀</p> 
+            <div class="input-group"> 
+                <input type="text" id="regName" placeholder="الاسم الكامل" required> 
+                <input type="tel" id="regPhone" placeholder="رقم الجوال" required> 
+            </div>
+            <button id="submitBtn" onclick="handleRegister()" class="primary-btn">إنشاء الحساب</button> 
+            <p class="switch-auth">لديك حساب بالفعل؟ <a href="sign-up02.html">سجل دخولك</a></p> 
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+            authDomain: "comments-test01.firebaseapp.com",
+            databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
+            projectId: "comments-test01",
+            storageBucket: "comments-test01.firebasestorage.app",
+            messagingSenderId: "1061900134848",
+            appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+    window.handleRegister = function() {
+    const name = document.getElementById('regName').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const btn = document.getElementById('submitBtn');
+
+    if(name === "" || phone === "") {
+        alert("يرجى ملء الاسم ورقم الجوال");
+        return;
+    }
+
+    // تعطيل الزر
+    btn.disabled = true;
+    btn.innerText = "جاري التحقق...";
+
+    // 1. التحقق أولاً من وجود الاسم أو الرقم
+    db.collection("users").where("phone", "==", phone).get()
+    .then((phoneCheck) => {
+        if (!phoneCheck.empty) {
+            alert("عذراً، رقم الجوال هذا مسجل مسبقاً!");
+            btn.disabled = false;
+            btn.innerText = "إنشاء الحساب";
+            return; // توقف هنا
+        }
+
+        // 2. إذا كان الرقم غير موجود، نتحقق من الاسم
+        db.collection("users").where("name", "==", name).get()
+        .then((nameCheck) => {
+            if (!nameCheck.empty) {
+                alert("هذا الاسم موجود مسبقاً، يرجى اختيار اسم آخر أو إضافة لقب.");
+                btn.disabled = false;
+                btn.innerText = "إنشاء الحساب";
+                return; // توقف هنا
+            }
+
+            // 3. إذا مرّت الفحوصات بنجاح، نقوم بالإضافة
+            btn.innerText = "جاري الحفظ...";
+            db.collection("users").add({
+                name: name,
+                phone: phone,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                // حفظ الاسم في المتصفح قبل الانتقال
+                localStorage.setItem("userName", name); 
+                alert("أهلاً بك يا " + name + "! تم إنشاء حسابك بنجاح.");
+                window.location.href = "index.html"; 
+            })
+            .catch((error) => {
+                alert("خطأ في الحفظ: " + error.message);
+                btn.disabled = false;
+                btn.innerText = "إنشاء الحساب";
+            });
+        });
+    })
+    .catch((error) => {
+        console.error("خطأ في التحقق:", error);
+        btn.disabled = false;
+        btn.innerText = "إنشاء الحساب";
+    });
+};
+    </script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    const authButtons = document.querySelector(".auth-buttons");
+
+    if (userName && authButtons) {
+        // إذا كان الشخص مسجل دخول، استبدل الأزرار بترحيب وزر خروج
+        authButtons.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="color: #042de2; font-weight: bold;"> ${userName}👤 </span>
+                <button onclick="logout()" style="background: none; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: inherit;">خروج</button>
+            </div>
+        `;
+    }
+});
+
+// دالة تسجيل الخروج
+function logout() {
+    localStorage.removeItem("userName"); // مسح الاسم من المتصفح
+    location.reload(); // إعادة تحميل الصفحة لتظهر أزرار الدخول مجدداً
+}
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    const authButtons = document.querySelector(".auth-buttons");
+    
+    // --- الجزء الجديد: إخفاء زر الإدارة عن غير "جميل" ---
+    const navLinks = document.querySelectorAll(".nav-links li");
+    navLinks.forEach(li => {
+        if (li.textContent.includes("الإدارة")) {
+            // إذا لم يكن هناك مستخدم مسجل، أو كان المستخدم ليس "jameel"، اخفِ الزر
+            if (userName !== "jameel") {
+                li.style.display = "none";
+            }
+        }
+    });
+    // ------------------------------------------------
+
+    if (userName && authButtons) {
+        // إذا كان الشخص مسجل دخول، استبدل الأزرار بترحيب وزر خروج
+        authButtons.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 15px;">
+<a href="customer-profile02.html" style="color: #042de2; font-weight: bold; text-decoration: none; transition: 0.3s; display: inline-flex; align-items: center;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+    ${userName} 👤
+</a>                <button onclick="logout()" style="background: none; border: 1px solid #ff4d4d; color: #ff4d4d; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-family: inherit;">خروج</button>
+            </div>
+        `;
+    }
+});
+
+// دالة تسجيل الخروج
+function logout() {
+    localStorage.removeItem("userName"); // مسح الاسم من المتصفح
+    location.reload(); // إعادة تحميل الصفحة لتظهر أزرار الدخول مجدداً
+}
+
+
+
+
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    
+    // استخدمنا querySelector لجلب القائمة عن طريق الكلاس الموجود فعلياً في كودك
+    const navLinksList = document.querySelector(".nav-links");
+
+    // تحقق أمني: إذا كان المستخدم هو جميل، أضف رابط لوحة التحكم للقائمة
+    if (userName === "jameel" && navLinksList) {
+        const adminLi = document.createElement("li");
+        adminLi.innerHTML = `<a href="control02.html" style="042de2: #ff4d4d; "> لوحة التحكم</a>`;
+        navLinksList.appendChild(adminLi);
+    }
+});
+</script>
+
+
+
+</body> 
+</html>
