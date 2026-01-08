@@ -1,206 +1,0 @@
-<!DOCTYPE html> 
-<html lang="ar" dir="rtl"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title> حبار | تسجيل الدخول </title> 
-    <link rel="stylesheet" href="sign-up-02-style.css"> 
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet"> 
-</head> 
-
-
-
-
-
-
-<nav class="navbar"> 
-    <div class="nav-container"> 
-        <div class="logo"> 
-            <a href="index.html" id="adminLink">حبار</a> 
-        </div>
-
-        <ul class="nav-links"> 
-            <li><a href="index.html">الرئيسية</a></li> 
-            <li><a href="Request02.html">طلب تعاون</a></li> 
-        </ul>
-
-        <div class="auth-buttons">
-            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
-            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
-        </div>
-        
-        <div class="menu-toggle" id="mobile-menu"> 
-            <span class="bar"></span> 
-            <span class="bar"></span> 
-            <span class="bar"></span> 
-        </div>
-    </div>
-</nav>
-
-
-
-
-
-
-
-
-
-
-<body> 
-    <div class="main-hero"> 
-        <div class="auth-card"> 
-            <h1 class="hero-title">تسجيل الدخول</h1> 
-            <p class="hero-subtitle">أهلاً بك مجدداً في عالم حبار 🌀</p> 
-            <div class="input-group"> 
-                <input type="tel" id="loginPhone" placeholder="رقم الجوال" required> 
-            </div>
-            <button onclick="handleLogin()" class="primary-btn">دخول</button> 
-            <p class="switch-auth">ليس لديك حساب؟ <a href="create-account-02.html">أنشئ حسابك الآن</a></p> 
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
-            authDomain: "comments-test01.firebaseapp.com",
-            databaseURL: "https://comments-test01-default-rtdb.firebaseio.com",
-            projectId: "comments-test01",
-            storageBucket: "comments-test01.firebasestorage.app",
-            messagingSenderId: "1061900134848",
-            appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-      
-window.handleLogin = function() {
-    const phone = document.getElementById('loginPhone').value;
-
-    if(phone) {
-        db.collection("users").where("phone", "==", phone).get()
-        .then((querySnapshot) => {
-            if (!querySnapshot.empty) {
-                const userDoc = querySnapshot.docs[0].data();
-                localStorage.setItem("userName", userDoc.name); 
-                
-                // --- التعديل هنا: توجيه خاص لجميل ---
-                if (userDoc.name === "jameel" || phone === "195") {
-                    const password = prompt(" يرجى إدخال كلمة السر ");
-                    if (password === "jameel") {
-                        // توجيه لصفحة الإدارة (افترضنا اسمها Test-Users.html بناءً على ملفاتك)
-                        window.location.href = "control02.html"; 
-                    } else {
-                        alert("كلمة السر خاطئة، سيتم دخولك كمستخدم عادي.");
-                        window.location.href = "index.html";
-                    }
-                } else {
-                    alert("تم تسجيل الدخول بنجاح! أهلاً بك " + userDoc.name);
-                    window.location.href = "index.html";
-                }
-            } else {
-
-
-                
-    // التعديل هنا: استخدام confirm لإعطاء خيارات للمستخدم
-    const goToSignup = confirm("هذا الرقم غير مسجل لدينا.\n\nاضغط 'موافق' لإنشاء حساب جديد، أو 'إلغاء' للتأكد من الرقم.");
-    if (goToSignup) {
-        window.location.href = "create-account-02.html";
-    }
-}
-            
-        })
-        .catch((error) => {
-            alert("خطأ في الاتصال بقاعدة البيانات.");
-        });
-    } else {
-        alert("يرجى إدخال رقم الجوال أولاً.");
-    }
-};
-        
-
-
-
-
-        window.goToAdmin = function() {
-            const password = prompt("يرجى إدخال كلمة السر:");
-            if (password === "jameel") window.location.href = "index.html";
-        };
-    </script>
-
-    <script>
-
-
-
-
-
-function logout() {
-    localStorage.removeItem("userName");
-    location.reload();
-}
-</script>
-
-
-<script>
-
-
-    
-    // ------------------------------------------------
-
-    if (!userName && authButtons) {
-    // نترك المحتوى كما هو في الـ HTML ولا نستبدله بزر واحد فقط
-    // أو نقوم بإعادة كتابة الزرين معاً هنا
-    authButtons.innerHTML = `
-        <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
-        <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
-    `;
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    const userName = localStorage.getItem("userName");
-    const navLinksList = document.getElementById("navLinksList");
-
-    // تحقق أمني: إذا كان المستخدم هو جميل، أضف رابط لوحة التحكم للقائمة
-    if (userName === "jameel") {
-        const adminLi = document.createElement("li");
-        adminLi.innerHTML = `<a href="control02.html" > لوحة التحكم</a>`;
-        navLinksList.appendChild(adminLi);
-    }
-});
-
-
-
-
-
-
-
-
-
-document.addEventListener("DOMContentLoaded", function() {
-    const userName = localStorage.getItem("userName");
-    
-    // استخدمنا querySelector لجلب القائمة عن طريق الكلاس الموجود فعلياً في كودك
-    const navLinksList = document.querySelector(".nav-links");
-
-    // تحقق أمني: إذا كان المستخدم هو جميل، أضف رابط لوحة التحكم للقائمة
-    if (userName === "jameel" && navLinksList) {
-        const adminLi = document.createElement("li");
-        adminLi.innerHTML = `<a href="control02.html" style="042de2: #ff4d4d; "> لوحة التحكم</a>`;
-        navLinksList.appendChild(adminLi);
-    }
-});
-</script>
-
-
-
-
-
-
-
-
-
-</body> 
-</html>
