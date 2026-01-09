@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار | المحادثة</title>
+    <link rel="stylesheet" href="index-02-style.css">
+    <link rel="stylesheet" href="chat-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           تنسيق مسار التنقل (Breadcrumbs) - نسخة محسنة
+           ========================================= */
+        .breadcrumb-container {
+            width: 100%;
+            max-width: 1100px;
+            margin: 100px auto -80px; 
+            padding: 0 20px;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .breadcrumbs {
+            list-style: none;
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumbs li {
+            display: flex;
+            align-items: center;
+        }
+
+        .breadcrumbs li a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+            opacity: 0.8;
+        }
+
+        .breadcrumbs li a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        .breadcrumbs li::after {
+            content: ">";
+            margin-right: 10px;
+            font-size: 12px;
+            opacity: 0.5;
+            display: inline-block;
+            transform: scaleX(-1);
+        }
+
+        .breadcrumbs li:last-child::after {
+            display: none;
+        }
+
+        .breadcrumbs li:last-child {
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .chat-wrapper {
+            margin-top: 0 !important;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+
+        <ul class="nav-links" id="navLinksList"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li>
+            </ul>
+
+        <div class="auth-buttons" id="authSection">
+            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
+            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+
+<div class="breadcrumb-container">
+    <ul class="breadcrumbs">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li id="dynamicBreadcrumb"><a href="customer-profile02.html">ملفي الشخصي</a></li>
+        <li>الدعم الفني</li>
+    </ul>
+</div>
+
+
+<div class="chat-wrapper">
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="user-info">
+                <h3>الدعم الفني</h3>
+            </div>
+        </div>
+
+        <div class="messages-area" id="messagesArea">
+            <div class="message system">مرحباً بك، كيف يمكننا مساعدتك اليوم؟</div>
+        </div>
+
+        <div class="chat-input-container">
+            <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا..." autocomplete="off">
+            <button id="sendBtn">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com/",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const currentUserName = localStorage.getItem("userName") || "زائر";
+
+    if (currentUserName === "زائر") {
+        alert("عذراً، يجب عليك تسجيل الدخول أولاً للوصول إلى المحادثة.");
+        window.location.href = "sign-up02.html";
+    }
+
+    const messagesArea = document.getElementById("messagesArea");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const userFromUrl = urlParams.get('user');
+
+    const chatRoom = (currentUserName === "jameel" && userFromUrl) ? userFromUrl : currentUserName;
+
+    if (currentUserName === "jameel" && userFromUrl) {
+        const headerTitle = document.querySelector('.user-info h3');
+        if (headerTitle) headerTitle.innerText = "محادثة العميل: " + userFromUrl;
+    }
+
+    function sendMessage() {
+        const messageText = messageInput.value.trim();
+        if (messageText === "") return;
+
+        const chatRef = database.ref('private_chats/' + chatRoom);
+        chatRef.push({
+            sender: currentUserName,
+            text: messageText,
+            timestamp: Date.now()
+        });
+
+        messageInput.value = ""; 
+    }
+
+    sendBtn.addEventListener("click", sendMessage);
+    messageInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+    database.ref('private_chats/' + chatRoom).on('value', (snapshot) => {
+        const data = snapshot.val();
+        messagesArea.innerHTML = '<div class="message system">مرحباً بك، كيف يمكننا مساعدتك اليوم؟</div>';
+        
+        if (data) {
+            Object.keys(data).forEach((key) => {
+                const chat = data[key];
+                const isMe = chat.sender === currentUserName;
+                
+                const messageDiv = document.createElement("div");
+                messageDiv.className = `message ${isMe ? 'sent' : 'received'}`;
+                
+                const senderTag = isMe ? "" : `<small style="display:block; color:#042de2; margin-bottom:4px; font-weight:bold;">${chat.sender}</small>`;
+                
+                messageDiv.innerHTML = `${senderTag}${chat.text}`;
+                messagesArea.appendChild(messageDiv);
+            });
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const authButtons = document.getElementById("authSection");
+        const navLinksList = document.getElementById("navLinksList");
+        const userName = localStorage.getItem("userName");
+
+        if (userName && authButtons) {
+            authButtons.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <a href="customer-profile02.html" 
+                       style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box; background-color: transparent;"
+                       onmouseover="this.style.color='#7e7e7e'; this.style.borderColor='#7e7e7e';" 
+                       onmouseout="this.style.color='#042de2'; this.style.borderColor='#042de2';">
+                         ${userName} 👤
+                    </a>
+                    <button onclick="logout()" 
+                            style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box;"
+                            onmouseover="this.style.backgroundColor='transparent'; this.style.color='#ff4d4d';" 
+                            onmouseout="this.style.backgroundColor='#ff4d4d'; this.style.color='white';">
+                        تسجيل خروج
+                    </button>
+                </div>
+            `;
+
+            // إضافة الروابط بناءً على نوع المستخدم
+            if (userName === "jameel") {
+                // للأدمن جميل: إضافة لوحة التحكم فقط
+                const adminLi = document.createElement("li");
+                adminLi.innerHTML = `<a href="control02.html">لوحة التحكم</a>`;
+                navLinksList.appendChild(adminLi);
+            } else {
+                // للمستخدمين الآخرين: إضافة الدعم الفني
+                const chatLi = document.createElement("li");
+                chatLi.innerHTML = `<a href="chat02.html">الدعم الفني</a>`;
+                navLinksList.appendChild(chatLi);
+            }
+        } else {
+            // في حالة عدم تسجيل الدخول، نظهر الدعم الفني بشكل افتراضي (أو نتركه حسب رغبتك)
+            const chatLi = document.createElement("li");
+            chatLi.innerHTML = `<a href="chat02.html">الدعم الفني</a>`;
+            navLinksList.appendChild(chatLi);
+        }
+
+        const menuToggle = document.getElementById('mobile-menu');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                navLinksList.classList.toggle('active');
+            });
+        }
+    });
+
+    window.logout = function() {
+        localStorage.removeItem("userName");
+        window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const userName = localStorage.getItem("userName");
+        const dynamicBreadcrumb = document.getElementById("dynamicBreadcrumb");
+
+        if (dynamicBreadcrumb) {
+            if (userName === "jameel") {
+                dynamicBreadcrumb.innerHTML = '<a href="control-coustmers02.html">إدارة العملاء</a>';
+            } else if (userName) {
+                dynamicBreadcrumb.innerHTML = '<a href="customer-profile02.html">ملفي الشخصي</a>';
+            } else {
+                dynamicBreadcrumb.style.display = "none"; 
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+/* =========================================
+   تنسيق الإدارة الاحترافي - هوية حبار
+   ========================================= */
+
+:root {
+    --primary-blue: #042de2;
+    --white: #ffffff;
+    --gray-text: #666666;
+    --nav-bg: #ffffff;
+    --faded-white: rgba(255, 255, 255, 0.15);
+    --font-main: 'IBM Plex Sans Arabic', sans-serif;
+}
+
+/* الأنميشن */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-section {
+    padding: 120px 20px 60px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.admin-card { 
+    background: var(--faded-white); 
+    padding: 40px; 
+    border-radius: 25px; 
+    border: 2px solid var(--white); 
+    backdrop-filter: blur(10px); 
+    width: 100%;
+    max-width: 1100px;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.admin-card h2 { 
+    color: var(--white); 
+    margin-bottom: 30px; 
+    text-align: center; 
+    font-weight: 700;
+    font-size: 28px;
+}
+
+/* تنسيق الجدول */
+.table-responsive { 
+    width: 100%;
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    direction: rtl;
+}
+
+th {
+    color: var(--white);
+    padding: 15px;
+    text-align: right;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+td {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    color: var(--white);
+    text-align: right;
+    vertical-align: top;
+}
+
+td:first-child { border-radius: 0 15px 15px 0; border-right: 1px solid rgba(255,255,255,0.2); }
+td:last-child { border-radius: 15px 0 0 15px; border-left: 1px solid rgba(255,255,255,0.2); }
+
+/* أزرار الإجراءات */
+.btn-action {
+    border: none; 
+    padding: 10px 16px; 
+    border-radius: 10px; 
+    cursor: pointer; 
+    font-size: 13px; 
+    font-weight: 600; 
+    transition: 0.3s;
+}
+
+.delete-btn { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid #ff4d4d; }
+.btn-action:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+/* =========================================
+   تنسيق الجوال (تحويل السطر إلى كارد مستطيل)
+   ========================================= */
+@media (max-width: 768px) {
+    thead { display: none; } /* إخفاء الرأس في الجوال */
+
+    table, tbody, tr, td {
+        display: block;
+        width: 100%;
+    }
+
+    tr {
+        background: rgba(255, 255, 255, 0.12);
+        margin-bottom: 25px;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    td {
+        border: none !important;
+        background: none !important;
+        padding: 12px 0 !important;
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+
+    td:last-child { border-bottom: none !important; }
+
+    /* إضافة تسميات توضيحية داخل الكارد */
+    td:nth-of-type(1):before { content: "العميل"; font-size: 11px; color: #ffcc00; margin-bottom: 5px; opacity: 0.8; }
+    td:nth-of-type(2):before { content: "التفاصيل"; font-size: 11px; color: #ffcc00; margin-bottom: 5px; opacity: 0.8; }
+    td:nth-of-type(3):before { content: "الحالة"; font-size: 11px; color: #ffcc00; margin-bottom: 5px; opacity: 0.8; }
+    td:nth-of-type(4):before { content: "الإجراءات"; font-size: 11px; color: #ffcc00; margin-bottom: 5px; opacity: 0.8; }
+
+    .action-group {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .btn-action { flex: 1; text-align: center; }
+}
+
+
+@media screen and (min-width: 769px) {
+    .logo { flex: 1; }
+    .nav-links { flex: 2; justify-content: center; }
+    .auth-buttons { flex: 1; justify-content: flex-end; }
+}
+
+@media screen and (max-width: 768px) {
+    .auth-buttons { display: none; }
+    .menu-toggle { display: flex; flex-direction: column; cursor: pointer; gap: 5px; width: 30px; }
+    .menu-toggle .bar { width: 100%; height: 3px; background-color: var(--primary-blue); border-radius: 5px; }
+    
+    .nav-links {
+        position: fixed; 
+        top: -100%; /* العودة للأصل */
+        left: 0; 
+        width: 100%;
+        background: var(--nav-bg); 
+        flex-direction: column;
+        padding: 20px 0; 
+        z-index: 1000; 
+        
+        /* إرجاع نفس الإعداد القديم تماماً 0.5s */
+        transition: 0.5s; 
+        
+        box-shadow: 0 10px 15px rgba(0,0,0,0.05); 
+        text-align: center;
+    }
+    
+    .nav-links.active { 
+        top: 70px; 
+    }
+    
+    .nav-links li { margin: 15px 0; }
+}
+
+
+
+
+
+
+
+
+/* =========================================
+   2. قسم شريط التنقل (Navbar)
+   ========================================= */
+.navbar {
+    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+    background: var(--nav-bg); z-index: 1001; border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; align-items: center;
+}
+
+.nav-container {
+    max-width: 1100px; width: 100%; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 25px; background: var(--nav-bg); height: 100%;
+}
+
+.logo a { text-decoration: none; color: var(--primary-blue); font-size: 24px; font-weight: 700; }
+.nav-links { display: flex; list-style: none; gap: 25px; }
+.nav-links li a { text-decoration: none; color: var(--primary-blue); font-size: 15px; font-weight: 500; transition: 0.3s; }
+
+.auth-buttons { display: flex; gap: 12px; align-items: center; }
+
+.nav-btn-login, .nav-btn-signup {
+    text-decoration: none; padding: 8px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; transition: 0.3s ease; white-space: nowrap;
+}
+
+.nav-btn-login { border: 2px solid var(--primary-blue); color: var(--primary-blue); }
+.nav-btn-signup { background-color: var(--primary-blue); color: #ffffff; border: 2px solid var(--primary-blue); }
+
+.nav-links li a:hover, 
+.nav-btn-login:hover,
+.nav-btn-signup:hover { 
+    color: var(--gray-text) !important; 
+    border-color: var(--gray-text) !important;
+    background: transparent !important;
+}
+
+
+
+/* تنسيق زر المنيو برجر */
+.menu-toggle {
+    display: none; /* يختفي في الشاشات الكبيرة */
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    width: 30px;
+    z-index: 1100;
+}
+
+.menu-toggle .bar {
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-blue);
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+/* شاشات الجوال */
+@media screen and (max-width: 768px) {
+    .menu-toggle { display: flex; }
+
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        right: -100%; /* مخفي خارج الشاشة */
+        flex-direction: column;
+        background: var(--nav-bg);
+        width: 100%;
+        text-align: center;
+        transition: 0.3s;
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        padding: 20px 0;
+        gap: 15px;
+    }
+
+    .nav-links.active {
+        right: 0; /* يظهر عند النقر */
+    }
+
+    .auth-buttons {
+        display: none; /* إخفاء الأزرار الأصلية في الجوال أو نقلها داخل المنيو */
+    }
+}

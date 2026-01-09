@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار |  طلب تعاون</title>
+    <link rel="stylesheet" href="Request-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+       /* =========================================
+   2. قسم شريط التنقل (Navbar)
+   ========================================= */
+.navbar {
+    position: fixed; top: 0; left: 0; width: 100%; height: 70px;
+    background: var(--nav-bg); z-index: 1001; border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex; align-items: center;
+}
+
+.nav-container {
+    max-width: 1100px; width: 100%; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 25px; background: var(--nav-bg); height: 100%;
+}
+
+.logo a { text-decoration: none; color: var(--primary-blue); font-size: 24px; font-weight: 700; }
+.nav-links { display: flex; list-style: none; gap: 25px; }
+.nav-links li a { text-decoration: none; color: var(--primary-blue); font-size: 15px; font-weight: 500; transition: 0.3s; }
+
+.auth-buttons { display: flex; gap: 12px; align-items: center; }
+
+.nav-btn-login, .nav-btn-signup {
+    text-decoration: none; padding: 8px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; transition: 0.3s ease; white-space: nowrap;
+}
+
+.nav-btn-login { border: 2px solid var(--primary-blue); color: var(--primary-blue); }
+.nav-btn-signup { background-color: var(--primary-blue); color: #ffffff; border: 2px solid var(--primary-blue); }
+
+.nav-links li a:hover, 
+.nav-btn-login:hover,
+.nav-btn-signup:hover { 
+    color: var(--gray-text) !important; 
+    border-color: var(--gray-text) !important;
+    background: transparent !important;
+}
+
+@media screen and (min-width: 769px) {
+    .logo { flex: 1; }
+    .nav-links { flex: 2; justify-content: center; }
+    .auth-buttons { flex: 1; justify-content: flex-end; }
+}
+
+@media screen and (max-width: 768px) {
+    .auth-buttons { display: none; }
+    .menu-toggle { display: flex; flex-direction: column; cursor: pointer; gap: 5px; width: 30px; }
+    .menu-toggle .bar { width: 100%; height: 3px; background-color: var(--primary-blue); border-radius: 5px; }
+    
+    .nav-links {
+        position: fixed; 
+        top: -100%; /* العودة للأصل */
+        left: 0; 
+        width: 100%;
+        background: var(--nav-bg); 
+        flex-direction: column;
+        padding: 20px 0; 
+        z-index: 1000; 
+        
+        /* إرجاع نفس الإعداد القديم تماماً 0.5s */
+        transition: 0.5s; 
+        
+        box-shadow: 0 10px 15px rgba(0,0,0,0.05); 
+        text-align: center;
+    }
+    
+    .nav-links.active { 
+        top: 70px; 
+    }
+    
+    .nav-links li { margin: 15px 0; }
+}
+
+
+    </style>
+</head>
+
+<body>
+<nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+
+        <ul class="nav-links"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li> 
+            <li><a href="chat02.html"> الدعم الفني</a></li> 
+        </ul>
+
+        <div class="auth-buttons" id="authSection">
+            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
+            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+    <div class="main-hero">
+        <div class="container">
+            <header class="header-section">
+                <h1 class="hero-title">حبّار | نموذج طلب تعاون</h1>
+                <p class="hero-subtitle">هذا النموذج مخصص للراغبين في التعاون بخصوص كتابة الإعلانات والمحتوى.</p>
+            </header>
+
+            <div class="form-card">
+                <div class="q-group">
+                    <label class="q-title">ما هو مجالك؟ *</label>
+                    <input type="text" id="field" placeholder="مثال: التقنية، العطور، التعليم..." required class="custom-input-white">
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">أنت تمثّل: *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="represent" value="صاحب مشروع"> صاحب مشروع</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="صانع محتوى"> صانع محتوى</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="شركة / فريق"> شركة / فريق</label>
+                        <label class="radio-item"><input type="radio" name="represent" value="فرد"> فرد (خدمة شخصية)</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">ما الخدمة التي تحتاجها؟ *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="service" value="كتابة إعلان"> كتابة إعلان</label>
+                        <label class="radio-item"><input type="radio" name="service" value="كتابة محتوى"> كتابة محتوى</label>
+                        <label class="radio-item"><input type="radio" name="service" value="وصف منتجات"> وصف منتجات</label>
+                        <label class="radio-item"><input type="radio" name="service" value="صفحة هبوط"> صفحة هبوط</label>
+                        <label class="radio-item"><input type="radio" name="service" value="بناء هوية"> بناء رسالة علامة</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">ميزانيتك التقريبية: *</label>
+                    <div class="radio-grid">
+                        <label class="radio-item"><input type="radio" name="budget" value="أقل من 500"> أقل من 500 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="500 - 1000"> 500 - 1000 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="1000 - 3000"> 1000 - 3000 ريال</label>
+                        <label class="radio-item"><input type="radio" name="budget" value="أكثر من ذلك"> أكثر من ذلك</label>
+                    </div>
+                </div>
+
+                <div class="q-group">
+                    <label class="q-title">البريد الإلكتروني للتواصل (اختياري)</label>
+                    <input type="email" id="contactInfo" placeholder="example@mail.com" class="custom-input-white">
+                </div>
+
+                <div class="button-row">
+                    <button type="button" onclick="sendRequest()" class="primary-btn">إرسال الطلب</button>
+                    <button type="button" onclick="resetForm()" class="secondary-btn">مسح النموذج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+            authDomain: "comments-test01.firebaseapp.com",
+            databaseURL: "https://comments-test01-default-rtdb.firebaseio.com/",
+            projectId: "comments-test01",
+            storageBucket: "comments-test01.firebasestorage.app",
+            messagingSenderId: "1061900134848",
+            appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // --- منطق المنيو الجوال ---
+        const menuToggle = document.querySelector('#mobile-menu');
+        const navLinks = document.querySelector('.nav-links');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+        }
+
+        // إجبار المستخدم على تسجيل الدخول
+        document.addEventListener("DOMContentLoaded", function() {
+            const userName = localStorage.getItem("userName");
+            const userPhone = localStorage.getItem("userPhone");
+            const authSection = document.getElementById("authSection");
+            const navLinksList = document.querySelector(".nav-links");
+
+            if (!userName) {
+                alert("يجب عليك تسجيل الدخول أولاً لإرسال طلب تعاون.");
+                window.location.href = "sign-up02.html";
+                return;
+            }
+
+            // تحديث شريط النافبار ببيانات المستخدم
+            if (authSection) {
+                authSection.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <a href="customer-profile02.html" 
+                           style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box; background-color: transparent;">
+                             ${userName} 👤
+                        </a>
+                        <button onclick="logout()" 
+                                style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box;">
+                            تسجيل خروج
+                        </button>
+                    </div>
+                `;
+            }
+
+            if (userName === "jameel" && navLinksList) {
+                if (!document.querySelector('a[href="control02.html"]')) {
+                    const adminLi = document.createElement("li");
+                    adminLi.innerHTML = `<a href="control02.html">لوحة التحكم</a>`;
+                    navLinksList.appendChild(adminLi);
+                }
+            }
+        });
+
+        window.sendRequest = function() {
+            const name = localStorage.getItem("userName"); 
+            const savedPhone = localStorage.getItem("userPhone"); // جلب رقم الجوال المخزن عند التسجيل
+            const field = document.getElementById('field').value;
+            const contactEmail = document.getElementById('contactInfo').value; // الايميل المكتوب
+            const represent = document.querySelector('input[name="represent"]:checked')?.value;
+            const service = document.querySelector('input[name="service"]:checked')?.value;
+            const budget = document.querySelector('input[name="budget"]:checked')?.value;
+
+            if (name && represent && service && field) {
+                database.ref('collaboration_requests').push({
+                    name: name,
+                    represent: represent,
+                    field: field,
+                    service: service,
+                    budget: budget,
+                    contact: savedPhone || contactEmail || "غير محدد", // يربط الطلب برقم الجوال المسجل به الحساب
+                    email: contactEmail,
+                    contactType: contactEmail ? "email" : "stored_phone",
+                    date: new Date().toLocaleString('ar-SA'),
+                    createdAt: Date.now()
+                }).then(() => {
+                    alert("تم إرسال طلبك بنجاح يا " + name + ". حبار يتطلع للعمل معك!");
+                    window.location.href = "index.html";
+                });
+            } else {
+                alert("يرجى ملء كافة البيانات المطلوبة (المجال، التمثيل، والخدمة)");
+            }
+        };
+
+        window.resetForm = function() {
+            if (confirm("هل أنت متأكد من رغبتك في مسح كافة البيانات؟")) {
+                location.reload(); 
+            }
+        };
+
+        window.logout = function() { 
+            localStorage.removeItem("userName"); 
+            localStorage.removeItem("userPhone");
+            window.location.href = "index.html"; 
+        }
+    </script>
+</body>
+</html>

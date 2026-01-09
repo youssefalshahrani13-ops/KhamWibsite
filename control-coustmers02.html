@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار | إدارة العملاء</title>
+    <link rel="stylesheet" href="index-02-style.css">
+    <link rel="stylesheet" href="control-coustmers-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        #usersTable td, thead th { text-align: right !important; padding-right: 25px; }
+        #newPhone, #newName, #newEmail { text-align: right !important; }
+        .breadcrumb-container { width: 100%; max-width: 1100px; margin: 100px auto -100px; padding: 0 20px; display: flex; justify-content: flex-start; }
+        .breadcrumbs { list-style: none; display: flex; gap: 10px; font-size: 14px; color: rgba(255, 255, 255, 0.8); }
+        .breadcrumbs li { display: flex; align-items: center; }
+        .breadcrumbs li a { color: white; text-decoration: none; transition: 0.3s; opacity: 0.8; }
+        .breadcrumbs li a:hover { opacity: 1; text-decoration: underline; }
+        .breadcrumbs li::after { content: ">"; margin-right: 10px; font-size: 12px; opacity: 0.5; }
+        .breadcrumbs li:last-child::after { display: none; }
+        .breadcrumbs li:last-child { font-weight: 700; color: #ffffff; }
+        
+        /* تنسيق أزرار التواصل المأخوذ من صفحة الطلبات */
+        .action-group { display: flex; gap: 8px; align-items: center; justify-content: flex-start; flex-wrap: wrap; }
+        .btn-contact {
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .btn-whatsapp { background-color: #25D366; }
+        .btn-email-action { background-color: #EA4335; }
+        .btn-contact:hover { transform: scale(1.1); opacity: 0.9; }
+        
+        .request-email { display: block; font-size: 11px; color: #ffcc00; margin-top: 4px; }
+    </style>
+</head>
+
+<body>
+
+    
+
+    <nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html">حبار</a> 
+        </div>
+
+        <ul class="nav-links" id="navLinksList"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li>
+            <li><a href="chat02.html">الدعم الفني</a></li> 
+        </ul>
+
+        <div class="auth-buttons" id="authSection">
+            </div>
+        
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </div>
+</nav>
+    
+<div class="breadcrumb-container">
+    <ul class="breadcrumbs">
+        <li><a href="index.html">الرئيسية</a></li>
+        <li><a href="control02.html">لوحة التحكم</a></li>
+        <li>إدارة العملاء</li>
+    </ul>
+</div>
+
+<div class="main-hero admin-section">
+    <div class="admin-card">
+        <h2>🌀 إدارة أعضاء حبار</h2>
+        <div class="add-box">
+            <input type="text" id="newName" placeholder="الاسم الكامل">
+            <input type="tel" id="newPhone" placeholder="رقم الجوال">
+            <input type="email" id="newEmail" placeholder="البريد الإلكتروني (اختياري)">
+            <button class="primary-btn" onclick="addUser()">إضافة +</button>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>الجوال</th>
+                        <th>البريد</th>
+                        <th>التواصل والإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5LqK5nYvhmgVLB8utjPjLQdNQMy_qe2c",
+        authDomain: "comments-test01.firebaseapp.com",
+        databaseURL: "https://comments-test01-default-rtdb.firebaseio.com/",
+        projectId: "comments-test01",
+        storageBucket: "comments-test01.firebasestorage.app",
+        messagingSenderId: "1061900134848",
+        appId: "1:1061900134848:web:a740fa25f3a27a36be0025"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const rtdb = firebase.database();
+
+    const adminName = localStorage.getItem("userName");
+    if (adminName !== "jameel") { alert("عذراً، هذه المنطقة للمدير فقط."); window.location.href = "index.html"; }
+
+    async function getRequestEmail(userName) {
+        return new Promise((resolve) => {
+            rtdb.ref('collaboration_requests').orderByChild('name').equalTo(userName).limitToLast(1).once('value', (snapshot) => {
+                let reqEmail = "";
+                snapshot.forEach((child) => { reqEmail = child.val().email; });
+                resolve(reqEmail);
+            });
+        });
+    }
+
+    db.collection("users").orderBy("createdAt", "desc").onSnapshot(async (snapshot) => {
+        const tableBody = document.getElementById('usersTable');
+        tableBody.innerHTML = "";
+        
+        for (const doc of snapshot.docs) {
+            const user = doc.data();
+            const email = user.email || "—";
+            const reqEmail = await getRequestEmail(user.name);
+            const whatsappLink = user.phone ? `https://wa.me/${user.phone.replace(/\s+/g, '')}` : '#';
+            const emailLink = (email && email !== "—") ? `mailto:${email}` : (reqEmail ? `mailto:${reqEmail}` : '#');
+
+            tableBody.innerHTML += `
+                <tr>
+                    <td><strong>${user.name}</strong></td>
+                    <td style="direction:ltr">${user.phone}</td>
+                    <td>
+                        <span>${email}</span>
+                        ${reqEmail ? `<small class="request-email">في الطلب: ${reqEmail}</small>` : ''}
+                    </td>
+                    <td>
+                        <div class="action-group">
+                            <a href="${whatsappLink}" target="_blank" class="btn-contact btn-whatsapp" title="واتساب">
+                                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.432 5.631 1.433h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            </a>
+                            <a href="${emailLink}" class="btn-contact btn-email-action" title="إيميل">
+                                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            </a>
+                            
+                            <button class="btn-action edit-btn" onclick="editName('${doc.id}', '${user.name}')">الاسم</button>
+                            <button class="btn-action chat-btn" onclick="openChat('${user.name}')">محادثة</button>
+                            <button class="btn-action delete-btn" onclick="deleteUser('${doc.id}')">حذف</button>
+                        </div>
+                    </td>
+                </tr>`;
+        }
+    });
+
+    window.addUser = function() {
+        const name = document.getElementById('newName').value;
+        const phone = document.getElementById('newPhone').value;
+        const email = document.getElementById('newEmail').value;
+        if(name && phone) {
+            db.collection("users").add({ 
+                name, phone, email: email || "",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp() 
+            });
+            document.getElementById('newName').value = ""; document.getElementById('newPhone').value = ""; document.getElementById('newEmail').value = "";
+        }
+    };
+
+    window.editName = function(id, oldName) {
+        const n = prompt("الاسم الجديد:", oldName);
+        if(n && n !== oldName) db.collection("users").doc(id).update({ name: n });
+    };
+
+    window.deleteUser = function(id) { if (confirm("هل أنت متأكد؟")) db.collection("users").doc(id).delete(); };
+    window.openChat = function(name) { window.location.href = `chat02.html?user=${name}`; };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const authSection = document.getElementById("authSection");
+        if (authSection && adminName) {
+            authSection.innerHTML = `<div style="display: flex; align-items: center; gap: 12px;"><a href="customer-profile02.html" style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px;">${adminName} 👤</a><button onclick="logout()" style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; min-width: 140px;">تسجيل خروج</button></div>`;
+        }
+    });
+
+    window.logout = function() { localStorage.removeItem("userName"); window.location.href = "index.html"; }
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+    // ... الكود الموجود مسبقاً (جلب الاسم، عرض لوحة التحكم إلخ) ...
+
+    const menuToggle = document.querySelector('#mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            
+            // اختياري: تحويل البرجر إلى X عند الضغط
+            menuToggle.classList.toggle('is-active'); 
+        });
+    }
+});
+
+</script>
+</body>
+</html>

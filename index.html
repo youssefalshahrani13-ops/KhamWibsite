@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حبار | كاتب إعلانات ومحتوى</title>
+    <link rel="stylesheet" href="index-02-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<nav class="navbar"> 
+    <div class="nav-container"> 
+        <div class="logo"> 
+            <a href="index.html" id="adminLink">حبار</a> 
+        </div>
+
+        <ul class="nav-links"> 
+            <li><a href="index.html">الرئيسية</a></li> 
+            <li><a href="Request02.html">طلب تعاون</a></li> 
+            <li><a href="chat02.html"> الدعم الفني</a></li> 
+
+        </ul>
+
+        <div class="auth-buttons">
+            <a href="sign-up02.html" class="nav-btn-login">تسجيل الدخول</a>
+            <a href="create-account-02.html" class="nav-btn-signup">إنشاء حساب</a>
+        </div>
+        
+        <div class="menu-toggle" id="mobile-menu"> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+            <span class="bar"></span> 
+        </div>
+    </div>
+</nav>
+
+<div class="container main-hero"> 
+    <div class="hero-content"> 
+        <h1 class="hero-title">كاتب إعلانات ومحتوى | Copywriter</h1> 
+        <p class="hero-subtitle">احذر تختار.. أحد غير الحبار 🌀</p> 
+        <div class="hero-cta"> 
+        
+        
+            <a href="Request02.html" class="primary-btn">ابدأ مشروعك معي</a> 
+
+<!--            <a href="Habbar01.html" class="secondary-btn">تصفح أعمالي</a> 
+ -->
+        </div>
+
+        <div class="contact-links"> 
+
+            <p>متاح للتواصل عبر الخاص أو البريد 📩</p> 
+            <br>
+            <div class="social-icons"> 
+                <a href="https://www.instagram.com/habbarcw" target="_blank">Instagram</a> 
+                <span>|</span> 
+                  <a href="https://wa.me/966501140643" target="_blank">WhatsApp</a> 
+                <span>|</span>                               
+            
+                <a href="mailto:habbarcw@gmail.com">Email</a> 
+  <span>|</span> 
+                   <a href="https://x.com/habarcw" target="_blank">Twitter</a> 
+              
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const userName = localStorage.getItem("userName");
+    const navLinksList = document.getElementById("navLinksList");
+
+    // تحقق أمني: إذا كان المستخدم هو جميل، أضف رابط لوحة التحكم للقائمة
+    if (userName === "jameel") {
+        const adminLi = document.createElement("li");
+        adminLi.innerHTML = `<a href="control02.html" > لوحة التحكم</a>`;
+        navLinksList.appendChild(adminLi);
+    }
+});
+
+
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const userName = localStorage.getItem("userName");
+        const authButtons = document.querySelector(".auth-buttons");
+        const navLinksList = document.querySelector(".nav-links");
+
+
+
+        // 1. إظهار رابط لوحة التحكم لـ "جميل" فقط وبسرعة
+        if (userName === "jameel" && navLinksList) {
+            const adminLi = document.createElement("li");
+            adminLi.innerHTML = `<a href="control02.html" "> لوحة التحكم</a>`;
+            navLinksList.appendChild(adminLi);
+        }
+
+
+
+        
+// 2. تحديث أزرار الدخول/الخروج لتطابق ستايل الهوفر الرمادي (نص وإطار رمادي)
+    if (userName && authButtons) {
+        authButtons.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <a href="customer-profile02.html" 
+                   style="color: #042de2; font-weight: 700; text-decoration: none; border: 2px solid #042de2; padding: 10px 24px; border-radius: 8px; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box; background-color: transparent;"
+                   onmouseover="this.style.color='#7e7e7e'; this.style.borderColor='#7e7e7e';" 
+                   onmouseout="this.style.color='#042de2'; this.style.borderColor='#042de2';">
+                    ${userName} 👤
+                </a>
+
+                <button onclick="logout()" 
+                        style="background-color: #ff4d4d; border: 2px solid #ff4d4d; color: white; font-weight: 700; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-family: inherit; transition: 0.3s ease; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; min-width: 140px; box-sizing: border-box;"
+                        onmouseover="this.style.backgroundColor='transparent'; this.style.color='#ff4d4d';" 
+                        onmouseout="this.style.backgroundColor='#ff4d4d'; this.style.color='white';">
+                    تسجيل خروج
+                </button>
+            </div>
+        `;
+    }
+
+
+
+        // 3. منطق المنيو الجوال
+        const menuToggle = document.querySelector('#mobile-menu');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                navLinksList.classList.toggle('active');
+            });
+        }
+    });
+
+    function logout() {
+        localStorage.removeItem("userName");
+        location.reload();
+    }
+
+
+    
+</script>
+
+</body>
+</html>
